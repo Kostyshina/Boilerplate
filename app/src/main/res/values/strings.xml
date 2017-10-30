@@ -6,4 +6,6 @@
 
     <!--Main Activity screen-->
     <string name="main_add_item">Add item</string>
+    <string name="main_item_text">Hello world</string>
+    <string name="main_add_item_error">Adding item error</string>
 </resources>
