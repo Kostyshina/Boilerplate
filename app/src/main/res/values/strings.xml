@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Boilerplate</string>
 
+    <string name="navigation_drawer_open">Open drawer</string>
+    <string name="navigation_drawer_close">Close drawer</string>
+
     <!--Main Activity screen-->
     <string name="main_add_item">Add item</string>
 </resources>
