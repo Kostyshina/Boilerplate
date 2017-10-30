@@ -23,3 +23,24 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+###---------------Begin: proguard configuration for Glide  ----------
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+###---------------End: proguard configuration for Glide  ----------
+
+###---------------Begin: proguard configuration for ButterKnife  ----------
+# For Butterknife:
+-keep class butterknife.** { *; }
+-dontwarn butterknife.internal.**
+
+# Version 8
+-keep class **_ViewBinding { *; }
+
+-keepclasseswithmembernames class * { @butterknife.* <fields>; }
+-keepclasseswithmembernames class * { @butterknife.* <methods>; }
+###---------------End: proguard configuration for ButterKnife  ----------
