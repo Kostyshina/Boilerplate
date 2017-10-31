@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     private static final String IMAGES_BUNDLE_KEY = "com.andersenlab.boilerplate.activity.imageList";
 
     @BindView(R.id.rv_main_images) RecyclerView rvImages;
+    @BindView(R.id.fl_main_button_container) FrameLayout addItemContainer;
 
     private MainPresenter mainPresenter;
     private ImageAdapter imageAdapter;

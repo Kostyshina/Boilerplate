@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,17 +9,25 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_main_images"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/btn_main_add_item" />
+        android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/btn_main_add_item"
+    <FrameLayout
+        android:id="@+id/fl_main_button_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_activity_horizontal"
-        android:layout_marginStart="@dimen/margin_activity_horizontal"
-        android:text="@string/main_add_item"
-        android:layout_alignParentBottom="true" />
+        android:background="@color/colorBlackTransparent"
+        android:layout_gravity="bottom">
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/btn_main_add_item"
+            style="@style/AppTheme.ButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_button_main_vertical"
+            android:layout_marginBottom="@dimen/margin_button_main_vertical"
+            android:layout_marginEnd="@dimen/margin_button_main_horizontal"
+            android:layout_marginStart="@dimen/margin_button_main_horizontal"
+            android:text="@string/main_add_item" />
+    </FrameLayout>
+
+</android.support.design.widget.CoordinatorLayout>

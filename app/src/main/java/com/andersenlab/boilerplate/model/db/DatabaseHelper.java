@@ -23,17 +23,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "BoilerplateApp.db";
     private static final int DATABASE_VERSION = 1;
-    private static DatabaseHelper sInstance;
+    private static DatabaseHelper instance;
 
     private DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     public static synchronized DatabaseHelper getInstance(Context context) {
-        if (sInstance == null)
-            sInstance = new DatabaseHelper(context.getApplicationContext());
+        if (instance == null)
+            instance = new DatabaseHelper(context.getApplicationContext());
 
-        return sInstance;
+        return instance;
     }
 
     @Override

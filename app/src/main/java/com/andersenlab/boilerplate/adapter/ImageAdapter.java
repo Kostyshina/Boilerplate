@@ -5,11 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.andersenlab.boilerplate.R;
 import com.andersenlab.boilerplate.adapter.viewholder.BaseViewHolder;
 import com.andersenlab.boilerplate.model.Image;
+import com.andersenlab.boilerplate.util.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         return items.size();
     }
 
+    @Override
+    public void onViewRecycled(ImageViewHolder holder) {
+        holder.clearContent();
+        super.onViewRecycled(holder);
+    }
+
     public void setItems(List<Image> items) {
         this.items.clear();
         this.items.addAll(items);
@@ -65,9 +72,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         Timber.i("addItem");
     }
 
-    static class ImageViewHolder extends BaseViewHolder<Image> {
+    class ImageViewHolder extends BaseViewHolder<Image> {
 
-        @BindView(R.id.tv_image_hello_world) TextView tvHelloWorld;
+        @BindView(R.id.iv_image_content) ImageView ivContent;
 
         ImageViewHolder(View view) {
             super(view);
@@ -76,8 +83,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
         @Override
         public void bind(Image imageItem) {
-            tvHelloWorld.setText(imageItem.getContentDescription() != null ?
+            ivContent.setContentDescription(imageItem.getContentDescription() != null ?
                     imageItem.getContentDescription() : imageItem.getImageUrl());
+            ImageUtils.getInstance().loadImage(context, imageItem.getImageUrl(), ivContent);
+        }
+
+        void clearContent() {
+            ImageUtils.getInstance().clearView(context, ivContent);
         }
     }
 }

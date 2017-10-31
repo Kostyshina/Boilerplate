@@ -16,10 +16,10 @@ import timber.log.Timber;
 
 public class BoilerplateApp extends Application {
 
-    private static BoilerplateApp sInstance;
+    private static BoilerplateApp instance;
 
     public static BoilerplateApp getInstance() {
-        return sInstance;
+        return instance;
     }
 
     @Override
@@ -42,8 +42,8 @@ public class BoilerplateApp extends Application {
         if (!Fabric.isInitialized()) {
             Fabric.with(this, new Crashlytics());
         }
-        if (sInstance == null) {
-            sInstance = this;
+        if (instance == null) {
+            instance = this;
         }
 
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);

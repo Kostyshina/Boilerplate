@@ -4,7 +4,11 @@
     <dimen name="margin_activity_horizontal">16dp</dimen>
     <dimen name="margin_activity_vertical">16dp</dimen>
     
+    <!-- Main Activity screen -->
+    <dimen name="margin_button_main_horizontal">32dp</dimen>
+    <dimen name="margin_button_main_vertical">16dp</dimen>
+    
     <!-- Item Image -->
-    <dimen name="height_image_content">64dp</dimen>
+    <dimen name="height_image_content">200dp</dimen>
 
 </resources>
