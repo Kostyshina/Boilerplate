@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Image implements Parcelable{
-    private int serialNumber;
+    private long id;
     private String contentDescription;
     private String imageUrl;
 
@@ -23,24 +23,23 @@ public class Image implements Parcelable{
     public Image() {
     }
 
-    public Image(int serialNumber, String contentDescription, String imageUrl) {
-        this.serialNumber = serialNumber;
+    public Image(String contentDescription, String imageUrl) {
         this.contentDescription = contentDescription;
         this.imageUrl = imageUrl;
     }
 
     private Image(Parcel source) {
-        this.serialNumber = source.readInt();
+        this.id = source.readLong();
         this.contentDescription = source.readString();
         this.imageUrl = source.readString();
     }
 
-    public int getSerialNumber() {
-        return serialNumber;
+    public long getId() {
+        return id;
     }
 
-    public void setSerialNumber(int serialNumber) {
-        this.serialNumber = serialNumber;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getContentDescription() {
@@ -66,7 +65,7 @@ public class Image implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int i) {
-        dest.writeInt(this.serialNumber);
+        dest.writeLong(this.id);
         dest.writeString(this.contentDescription);
         dest.writeString(this.imageUrl);
     }

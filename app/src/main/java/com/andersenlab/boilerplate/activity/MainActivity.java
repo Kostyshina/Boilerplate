@@ -3,6 +3,7 @@ package com.andersenlab.boilerplate.activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.andersenlab.boilerplate.R;
 import com.andersenlab.boilerplate.model.Image;
@@ -34,8 +35,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
             currentItem = savedInstanceState.getParcelable(CURRENT_ITEM_BUNDLE_KEY);
         }
 
-        if (currentItem != null)
-            tvHelloWorld.setText(currentItem.getContentDescription());
+        setText();
 
         mainPresenter = new MainPresenter();
         mainPresenter.attachView(this);
@@ -56,7 +56,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     @OnClick(R.id.btn_main_add_item)
     public void addItem(View view) {
         Timber.i("Tap on add item button");
-        loadItem(0);
+        loadItem();
     }
 
     @Override
@@ -71,23 +71,31 @@ public class MainActivity extends BaseActivity implements MainMvpView {
 
     @Override
     public void showNewItem(Image item) {
-        Timber.i("showNewItem " + item.getSerialNumber());
+        Timber.i("showNewItem " + item.getId());
         this.currentItem = item;
-        tvHelloWorld.setText(currentItem.getContentDescription());
+        setText();
+    }
+
+    @Override
+    public void showEmpty() {
+        Toast.makeText(this, "No more elements in the list", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void showError() {
         Timber.e("Error. load next item");
-        loadItem(1);
     }
 
-    private void loadItem(int increment) {
+    private void setText() {
+        if (currentItem != null) {
+            tvHelloWorld.setText(currentItem.getContentDescription() != null ?
+                    currentItem.getContentDescription() : currentItem.getImageUrl());
+        }
+    }
+
+    private void loadItem() {
         if (mainPresenter != null) {
-            int itemNum = 1;
-            if (currentItem != null)
-                itemNum += currentItem.getSerialNumber() + increment;
-            mainPresenter.loadItem(itemNum);
+            mainPresenter.loadItem();
         }
     }
 }

@@ -1,21 +1,39 @@
 package com.andersenlab.boilerplate.presenter;
 
 import com.andersenlab.boilerplate.BoilerplateApp;
-import com.andersenlab.boilerplate.R;
 import com.andersenlab.boilerplate.model.Image;
+import com.andersenlab.boilerplate.model.db.DatabaseHelper;
 import com.andersenlab.boilerplate.view.MainMvpView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import timber.log.Timber;
+
 public class MainPresenter extends BasePresenter<MainMvpView> {
-    public void loadItem(int serialNum) {
+
+    private List<Image> images;
+
+    public void loadItem() {
         if (isViewAttached()) {
-            if (serialNum % 4 == 0)
-                getMvpView().showError();
-            else
-                getMvpView().showNewItem(
-                        new Image(serialNum,
-                                BoilerplateApp.getInstance()
-                                .getString(R.string.main_item_text) + " " + serialNum, null));
+            if (images == null) {
+                Timber.i("initialize images");
+                DatabaseHelper dbHelper = DatabaseHelper.getInstance(BoilerplateApp.getInstance());
+                images = new ArrayList<>(dbHelper.getAllImages());
+            }
+
+            Timber.i("images count = " + images.size());
+
+            if (images.isEmpty())
+                getMvpView().showEmpty();
+            else {
+                getMvpView().showNewItem(images.remove(0));
+            }
         } else
             getMvpView().showError();
+    }
+
+    public void resetItems() {
+        images = null;
     }
 }

@@ -3,6 +3,8 @@ package com.andersenlab.boilerplate;
 import android.app.Application;
 import android.os.StrictMode;
 
+import com.andersenlab.boilerplate.model.Image;
+import com.andersenlab.boilerplate.model.db.DatabaseHelper;
 import com.crashlytics.android.Crashlytics;
 
 import io.fabric.sdk.android.Fabric;
@@ -42,6 +44,15 @@ public class BoilerplateApp extends Application {
         }
         if (sInstance == null) {
             sInstance = this;
+        }
+
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
+        dbHelper.deleteAllImages();
+        String[] images = new String[]{"Image 1", "Image 2", "Image 3", "Image 4",
+                "Image 5", "Image 6", "Image 7", "Image 8", "Image 9", "Image 10",
+                "Image 11", "Image 12", "Image 13", "Image 14", "Image 15", "Image 16"};
+        for(String image : images) {
+            dbHelper.addImage(new Image(null, image));
         }
     }
 }
