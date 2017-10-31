@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.andersenlab.boilerplate">
+    package="com.andersenlab.boilerplate">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -13,18 +13,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
 
-        <activity android:name=".activity.BaseActivity"/>
-
         <activity android:name=".activity.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="8e0d09d7a69982a5ddf712600e52df6043e1a4f2"/>
+            android:value="8e0d09d7a69982a5ddf712600e52df6043e1a4f2" />
     </application>
 </manifest>

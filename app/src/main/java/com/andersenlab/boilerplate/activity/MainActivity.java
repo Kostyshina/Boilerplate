@@ -1,41 +1,56 @@
 package com.andersenlab.boilerplate.activity;
 
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.andersenlab.boilerplate.R;
+import com.andersenlab.boilerplate.adapter.ImageAdapter;
 import com.andersenlab.boilerplate.model.Image;
 import com.andersenlab.boilerplate.presenter.MainPresenter;
 import com.andersenlab.boilerplate.view.MainMvpView;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 
 public class MainActivity extends BaseActivity implements MainMvpView {
 
-    private static final String CURRENT_ITEM_BUNDLE_KEY = "com.andersenlab.boilerplate.activity.currentItem";
+    private static final String IMAGES_BUNDLE_KEY = "com.andersenlab.boilerplate.activity.imageList";
 
-    @BindView(R.id.tv_main_hello_world) TextView tvHelloWorld;
+    @BindView(R.id.rv_main_images) RecyclerView rvImages;
 
     private MainPresenter mainPresenter;
-    private Image currentItem = new Image();
+    private ImageAdapter imageAdapter;
+    private ArrayList<Image> imageList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Timber.i("onCreate");
         setContentView(R.layout.activity_main);
 
-        ButterKnife.bind(this);
+        imageAdapter = new ImageAdapter(this);
 
         if (savedInstanceState != null) {
-            currentItem = savedInstanceState.getParcelable(CURRENT_ITEM_BUNDLE_KEY);
+            imageList = savedInstanceState.getParcelableArrayList(IMAGES_BUNDLE_KEY);
         }
 
-        setText();
+        if (imageList != null && !imageList.isEmpty()) {
+            imageAdapter.setItems(imageList);
+        }
+
+        rvImages.setLayoutManager(new LinearLayoutManager(this));
+        rvImages.addItemDecoration(new DividerItemDecoration(this, LinearLayout.VERTICAL));
+        ((SimpleItemAnimator)rvImages.getItemAnimator()).setSupportsChangeAnimations(false);
+        rvImages.setAdapter(imageAdapter);
 
         mainPresenter = new MainPresenter();
         mainPresenter.attachView(this);
@@ -44,7 +59,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(CURRENT_ITEM_BUNDLE_KEY, currentItem);
+        outState.putParcelableArrayList(IMAGES_BUNDLE_KEY, imageList);
     }
 
     @Override
@@ -55,8 +70,8 @@ public class MainActivity extends BaseActivity implements MainMvpView {
 
     @OnClick(R.id.btn_main_add_item)
     public void addItem(View view) {
-        Timber.i("Tap on add item button");
         loadItem();
+        Timber.i("Tap on add item button");
     }
 
     @Override
@@ -71,31 +86,32 @@ public class MainActivity extends BaseActivity implements MainMvpView {
 
     @Override
     public void showNewItem(Image item) {
+        setNewItem(item);
         Timber.i("showNewItem " + item.getId());
-        this.currentItem = item;
-        setText();
     }
 
     @Override
     public void showEmpty() {
-        Toast.makeText(this, "No more elements in the list", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.main_no_items, Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void showError() {
-        Timber.e("Error. load next item");
-    }
-
-    private void setText() {
-        if (currentItem != null) {
-            tvHelloWorld.setText(currentItem.getContentDescription() != null ?
-                    currentItem.getContentDescription() : currentItem.getImageUrl());
-        }
+    public void showError(MvpViewException exc) {
+        Timber.e(exc);
     }
 
     private void loadItem() {
         if (mainPresenter != null) {
-            mainPresenter.loadItem();
+            mainPresenter.loadItem(this);
         }
+    }
+
+    private void setNewItem(Image item) {
+        if (imageList == null)
+            imageList = new ArrayList<>();
+
+        imageList.add(item);
+        imageAdapter.addItem(item);
+        rvImages.scrollToPosition(imageList.size()-1);
     }
 }

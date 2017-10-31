@@ -1,12 +1,8 @@
 package com.andersenlab.boilerplate.model;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
-public class Image implements Parcelable{
-    private long id;
-    private String contentDescription;
-    private String imageUrl;
+public class Image extends BaseModel {
 
     public static final Creator<Image> CREATOR = new Creator<Image>() {
         @Override
@@ -19,6 +15,10 @@ public class Image implements Parcelable{
             return new Image[0];
         }
     };
+
+    private long id;
+    private String contentDescription;
+    private String imageUrl;
 
     public Image() {
     }

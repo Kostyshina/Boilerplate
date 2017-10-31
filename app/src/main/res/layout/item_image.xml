@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/height_image_content">
+
+    <!--<ImageView
+        android:id="@+id/iv_image_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/image_content_description"
+        android:scaleType="centerCrop" />-->
+
+    <TextView
+        android:id="@+id/tv_image_hello_world"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        tools:text="@string/main_item_text" />
+
+</FrameLayout>

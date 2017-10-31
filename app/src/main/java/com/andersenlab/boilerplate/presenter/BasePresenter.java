@@ -12,6 +12,10 @@ import timber.log.Timber;
 
 public class BasePresenter<T extends MvpView> implements Presenter<T> {
 
+    protected static final String EXCEPTION_MESSAGE_VIEW_NOT_ATTACHED =
+            "Please call Presenter.attachView(MvpView) before" +
+                    " requesting data to the Presenter";
+
     private T mvpView;
 
     @Override

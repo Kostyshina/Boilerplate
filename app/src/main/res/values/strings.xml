@@ -4,8 +4,30 @@
     <string name="navigation_drawer_open">Open drawer</string>
     <string name="navigation_drawer_close">Close drawer</string>
 
-    <!--Main Activity screen-->
+    <!-- Main Activity screen -->
     <string name="main_add_item">Add item</string>
     <string name="main_item_text">Hello world</string>
     <string name="main_add_item_error">Adding item error</string>
+    <string name="main_no_items">No more elements in the list</string>
+    
+    <!-- Item Image -->
+    <string name="image_content_description">Image placed</string>
+    <string-array name="image_items">
+        <item>Image 1</item>
+        <item>Image 2</item>
+        <item>Image 3</item>
+        <item>Image 4</item>
+        <item>Image 5</item>
+        <item>Image 6</item>
+        <item>Image 7</item>
+        <item>Image 8</item>
+        <item>Image 9</item>
+        <item>Image 10</item>
+        <item>Image 11</item>
+        <item>Image 12</item>
+        <item>Image 13</item>
+        <item>Image 14</item>
+        <item>Image 15</item>
+        <item>Image 16</item>
+    </string-array>
 </resources>

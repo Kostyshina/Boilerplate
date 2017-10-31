@@ -81,7 +81,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             image = getImage(cursor);
         }
 
-        if (cursor != null && !cursor.isClosed()){
+        if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
 

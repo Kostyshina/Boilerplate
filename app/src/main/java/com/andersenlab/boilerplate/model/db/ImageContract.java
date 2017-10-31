@@ -7,7 +7,8 @@ public class ImageContract {
             ImageEntry.COLUMN_CONTENT_DESCRIPTION + " TEXT, " +
             ImageEntry.COLUMN_IMAGE_URL + " TEXT NOT NULL);";
 
-    private ImageContract() {}
+    private ImageContract() {
+    }
 
     static class ImageEntry {
 
@@ -16,6 +17,7 @@ public class ImageContract {
         static final String COLUMN_IMAGE_URL = "imageUrl";
         static final String COLUMN_CONTENT_DESCRIPTION = "contentDescription";
 
-        private ImageEntry() {}
+        private ImageEntry() {
+        }
     }
 }

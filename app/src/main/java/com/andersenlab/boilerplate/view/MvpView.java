@@ -7,4 +7,11 @@ package com.andersenlab.boilerplate.view;
  */
 
 public interface MvpView {
+
+    class MvpViewException extends RuntimeException {
+
+        public MvpViewException(String message) {
+            super(message);
+        }
+    }
 }
