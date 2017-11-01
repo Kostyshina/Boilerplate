@@ -6,12 +6,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.andersenlab.boilerplate.R;
 import com.andersenlab.boilerplate.adapter.ImageAdapter;
+import com.andersenlab.boilerplate.customview.FloatingBottomSheet;
 import com.andersenlab.boilerplate.model.Image;
 import com.andersenlab.boilerplate.presenter.MainPresenter;
 import com.andersenlab.boilerplate.view.MainMvpView;
@@ -27,7 +27,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     private static final String IMAGES_BUNDLE_KEY = "com.andersenlab.boilerplate.activity.imageList";
 
     @BindView(R.id.rv_main_images) RecyclerView rvImages;
-    @BindView(R.id.fl_main_button_container) FrameLayout addItemContainer;
+    @BindView(R.id.fbs_main_add_item) FloatingBottomSheet fbsAddItem;
 
     private MainPresenter mainPresenter;
     private ImageAdapter imageAdapter;
@@ -51,7 +51,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
 
         rvImages.setLayoutManager(new LinearLayoutManager(this));
         rvImages.addItemDecoration(new DividerItemDecoration(this, LinearLayout.VERTICAL));
-        ((SimpleItemAnimator)rvImages.getItemAnimator()).setSupportsChangeAnimations(false);
+        ((SimpleItemAnimator) rvImages.getItemAnimator()).setSupportsChangeAnimations(false);
         rvImages.setAdapter(imageAdapter);
 
         mainPresenter = new MainPresenter();
@@ -70,7 +70,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         mainPresenter.detachView();
     }
 
-    @OnClick(R.id.btn_main_add_item)
+    @OnClick(R.id.fbs_main_add_item)
     public void addItem(View view) {
         loadItem();
         Timber.i("Tap on add item button");
@@ -114,6 +114,6 @@ public class MainActivity extends BaseActivity implements MainMvpView {
 
         imageList.add(item);
         imageAdapter.addItem(item);
-        rvImages.scrollToPosition(imageList.size()-1);
+        rvImages.scrollToPosition(imageList.size() - 1);
     }
 }

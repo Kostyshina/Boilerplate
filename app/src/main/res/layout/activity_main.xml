@@ -11,23 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <FrameLayout
-        android:id="@+id/fl_main_button_container"
+    <com.andersenlab.boilerplate.customview.FloatingBottomSheet
+        android:id="@+id/fbs_main_add_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/main_add_item"
         android:background="@color/colorBlackTransparent"
-        android:layout_gravity="bottom">
-
-        <Button
-            android:id="@+id/btn_main_add_item"
-            style="@style/AppTheme.ButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_button_main_vertical"
-            android:layout_marginBottom="@dimen/margin_button_main_vertical"
-            android:layout_marginEnd="@dimen/margin_button_main_horizontal"
-            android:layout_marginStart="@dimen/margin_button_main_horizontal"
-            android:text="@string/main_add_item" />
-    </FrameLayout>
+        app:behavior_scroll_direction_collapse="top"
+        app:behavior_collapse_threshold="@dimen/size_floating_bottom_sheet_threshold" />
 
 </android.support.design.widget.CoordinatorLayout>

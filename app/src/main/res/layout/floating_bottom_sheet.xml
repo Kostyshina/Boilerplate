@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fl_button_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <Button
+        android:id="@+id/btn_action"
+        style="@style/AppTheme.ButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_button_main_vertical"
+        android:layout_marginBottom="@dimen/margin_button_main_vertical"
+        android:layout_marginEnd="@dimen/margin_button_main_horizontal"
+        android:layout_marginStart="@dimen/margin_button_main_horizontal"
+        tools:text="@string/text_hello_world" />
+</FrameLayout>

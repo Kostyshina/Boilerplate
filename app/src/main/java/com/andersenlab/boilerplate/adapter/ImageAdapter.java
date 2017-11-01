@@ -83,9 +83,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
         @Override
         public void bind(Image imageItem) {
+            ImageUtils.getInstance().loadImage(context, imageItem.getImageUrl(), ivContent);
             ivContent.setContentDescription(imageItem.getContentDescription() != null ?
                     imageItem.getContentDescription() : imageItem.getImageUrl());
-            ImageUtils.getInstance().loadImage(context, imageItem.getImageUrl(), ivContent);
         }
 
         void clearContent() {

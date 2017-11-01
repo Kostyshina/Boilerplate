@@ -7,6 +7,7 @@
     <!-- Main Activity screen -->
     <dimen name="margin_button_main_horizontal">32dp</dimen>
     <dimen name="margin_button_main_vertical">16dp</dimen>
+    <dimen name="size_floating_bottom_sheet_threshold">64dp</dimen>
     
     <!-- Item Image -->
     <dimen name="height_image_content">200dp</dimen>
