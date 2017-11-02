@@ -2,6 +2,8 @@ package com.andersenlab.boilerplate.customview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -18,7 +20,7 @@ import timber.log.Timber;
 /**
  * Behavior class for collapsing/expanding views in CoordinatorLayout.
  */
-
+//TODO class optimisation. saving collapsed/expanded state for the view.
 public class ScrollAwareBehavior<V extends View> extends CoordinatorLayout.Behavior<V> {
 
     private static final int DIRECTION_UP = 1;
@@ -33,15 +35,18 @@ public class ScrollAwareBehavior<V extends View> extends CoordinatorLayout.Behav
     private @ScrollingDirection int scrollingDirection;
     /* Tracking last threshold crossed */
     private @ScrollingDirection int scrollTrigger;
-    /* */
+    /* View is collapsed when you scrolling in that direction */
     private Direction scrollDirectionCollapse;
     /* Accumulated scroll distance */
     private int scrollDistance;
     /* Distance threshold to trigger animation */
     private int scrollThreshold;
+    /* Indicates if view is showing or not */
+    private boolean isExpanded = false;
 
     public ScrollAwareBehavior() {
         Timber.i("default constructor");
+        scrollDirectionCollapse = Direction.BOTTOM;
     }
 
     /**
@@ -69,10 +74,23 @@ public class ScrollAwareBehavior<V extends View> extends CoordinatorLayout.Behav
                         Direction.BOTTOM.getValue())
         );
 
-        Timber.i("scrollThreshold = " + scrollThreshold);// + ", actionBar height = " + actionBarHeight);
+
+        Timber.i("scrollThreshold = " + scrollThreshold);
         Timber.i("scrollDirectionCollapse = " + scrollDirectionCollapse);
 
         a.recycle();
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState(CoordinatorLayout parent, V child) {
+        Timber.i("onSaveInstanceState");
+        return super.onSaveInstanceState(parent, child);
+    }
+
+    @Override
+    public void onRestoreInstanceState(CoordinatorLayout parent, V child, Parcelable state) {
+        Timber.i("onRestoreInstanceState");
+        super.onRestoreInstanceState(parent, child, state);
     }
 
     //Called before a nested scroll event. Return true to declare interest
@@ -89,7 +107,7 @@ public class ScrollAwareBehavior<V extends View> extends CoordinatorLayout.Behav
     public void onNestedPreScroll(@NonNull CoordinatorLayout coordinatorLayout,
                                   @NonNull V child, @NonNull View target, int dx, int dy,
                                   @NonNull int[] consumed, int type) {
-        Timber.i("onNestedPreScroll, dy = " + dy + ", consumed y = " + consumed[1]);
+        //Timber.i("onNestedPreScroll, dy = " + dy + ", consumed y = " + consumed[1]);
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type);
         if (dy > 0 && scrollingDirection != DIRECTION_UP) {
             Timber.i("scroll down");
@@ -106,13 +124,13 @@ public class ScrollAwareBehavior<V extends View> extends CoordinatorLayout.Behav
                                @NonNull V child, @NonNull View target,
                                int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed,
                                int type) {
-        Timber.i("onNestedScroll");
-        Timber.i("scrollDirection = " + scrollingDirection + ", scrollTrigger = " + scrollTrigger);
-        Timber.i("dyConsumed = " + dyConsumed + ", dyUnconsumed = " + dyUnconsumed);
+        //Timber.i("onNestedScroll");
+        //Timber.i("scrollDirection = " + scrollingDirection + ", scrollTrigger = " + scrollTrigger);
+        //Timber.i("dyConsumed = " + dyConsumed + ", dyUnconsumed = " + dyUnconsumed);
         super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type);
         //Consumed distance is the actual distance traveled by the scrolling view
         scrollDistance += dyConsumed;
-        Timber.i("scrollDistance = " + scrollDistance);
+        //Timber.i("scrollDistance = " + scrollDistance);
         if (scrollDistance > scrollThreshold
                 && scrollTrigger != DIRECTION_UP) {
             switchViewVisibility(child, DIRECTION_UP);
@@ -145,12 +163,14 @@ public class ScrollAwareBehavior<V extends View> extends CoordinatorLayout.Behav
     }
 
     private void hideViews(V view) {
-        Timber.i("hideView");
+        Timber.i("hideView, viewHeight = " + view.getHeight());
+        isExpanded = false;
         view.animate().translationY(view.getHeight()).setInterpolator(new AccelerateInterpolator(2)).start();
     }
 
     private void showViews(V view) {
-        Timber.i("showView");
+        Timber.i("showView, viewHeight = " + view.getHeight());
+        isExpanded = true;
         view.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
     }
 
@@ -179,6 +199,36 @@ public class ScrollAwareBehavior<V extends View> extends CoordinatorLayout.Behav
 
         public int getValue() {
             return value;
+        }
+    }
+
+    private static class SavedState extends View.BaseSavedState {
+        private boolean isExpanded;
+
+        public static final Parcelable.Creator<SavedState> CREATOR =
+                new Parcelable.Creator<SavedState>() {
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
+
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
+
+        SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            this.isExpanded = in.readByte() != 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeByte((byte) (this.isExpanded ? 1 : 0));
         }
     }
 }

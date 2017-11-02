@@ -28,7 +28,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
             Timber.i("images count = " + images.size());
 
             if (images.isEmpty())
-                getMvpView().showEmpty();
+                getMvpView().showNoNewItem();
             else {
                 getMvpView().showNewItem(images.remove(0));
             }

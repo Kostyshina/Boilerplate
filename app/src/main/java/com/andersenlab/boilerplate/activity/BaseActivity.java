@@ -3,7 +3,6 @@ package com.andersenlab.boilerplate.activity;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +16,6 @@ import com.andersenlab.boilerplate.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -27,16 +25,13 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Timber.i("onCreate");
     }
 
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
-        Timber.i("setContentView");
         super.setContentView(R.layout.activity_base);
         FrameLayout activityContainer = getContainerLayout();
         getLayoutInflater().inflate(layoutResID, activityContainer, true);
-        Timber.i("bind");
         ButterKnife.bind(this);
         initNavDrawer();
     }

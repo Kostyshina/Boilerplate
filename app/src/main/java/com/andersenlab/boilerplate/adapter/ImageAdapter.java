@@ -74,7 +74,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     class ImageViewHolder extends BaseViewHolder<Image> {
 
-        @BindView(R.id.iv_image_content) ImageView ivContent;
+        @BindView(R.id.iv_image_content) ImageView contentImage;
 
         ImageViewHolder(View view) {
             super(view);
@@ -83,13 +83,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
         @Override
         public void bind(Image imageItem) {
-            ImageUtils.getInstance().loadImage(context, imageItem.getImageUrl(), ivContent);
-            ivContent.setContentDescription(imageItem.getContentDescription() != null ?
+            ImageUtils.getInstance().loadImage(context, imageItem.getImageUrl(), contentImage);
+            contentImage.setContentDescription(imageItem.getContentDescription() != null ?
                     imageItem.getContentDescription() : imageItem.getImageUrl());
         }
 
         void clearContent() {
-            ImageUtils.getInstance().clearView(context, ivContent);
+            ImageUtils.getInstance().clearView(context, contentImage);
         }
     }
 }

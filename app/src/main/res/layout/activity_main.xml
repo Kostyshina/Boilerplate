@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cdl_main_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.andersenlab.boilerplate.activity.MainActivity">
@@ -11,13 +12,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                 xmlns:tools="http://schemas.android.com/tools"
+                 android:id="@+id/fl_main_button_container"
+                 android:layout_gravity="bottom"
+                 android:visibility="gone"
+                 app:layout_behavior=".customview.ScrollAwareBehavior"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_main_add_item"
+            style="@style/AppTheme.ButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_button_main_vertical"
+            android:layout_marginBottom="@dimen/margin_button_main_vertical"
+            android:layout_marginEnd="@dimen/margin_button_main_horizontal"
+            android:layout_marginStart="@dimen/margin_button_main_horizontal"
+            tools:text="@string/text_hello_world" />
+    </FrameLayout>-->
+
     <com.andersenlab.boilerplate.customview.FloatingBottomSheet
         android:id="@+id/fbs_main_add_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:layout_gravity="bottom"
         android:text="@string/main_add_item"
         android:background="@color/colorBlackTransparent"
-        app:behavior_scroll_direction_collapse="top"
         app:behavior_collapse_threshold="@dimen/size_floating_bottom_sheet_threshold" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -5,6 +5,6 @@ import com.andersenlab.boilerplate.model.Image;
 public interface MainMvpView extends MvpView {
 
     void showNewItem(Image item);
-    void showEmpty();
+    void showNoNewItem();
     void showError(MvpViewException exc);
 }
