@@ -10,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.andersenlab.boilerplate.R;
 
@@ -20,6 +19,7 @@ import butterknife.ButterKnife;
 public class BaseActivity extends AppCompatActivity {
 
     @BindView(R.id.base_root_layout) DrawerLayout drawerLayout;
+    @Nullable
     @BindView(R.id.toolbar) Toolbar toolbar;
 
     @Override
@@ -71,9 +71,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private void setToolbarTitle(String title) {
         if (toolbar != null) {
-            TextView titleView = toolbar.findViewById(R.id.toolbar_title);
-            if (titleView != null)
-                titleView.setText(title);
+            toolbar.setTitle(title);
         }
     }
 
@@ -90,8 +88,8 @@ public class BaseActivity extends AppCompatActivity {
     private void initToolbar() {
         if (toolbar != null) {
             if (useToolbar()) {
-                setSupportActionBar(toolbar);
                 setToolbarTitle(getToolbarTitle());
+                setSupportActionBar(toolbar);
             } else
                 toolbar.setVisibility(View.GONE);
         }

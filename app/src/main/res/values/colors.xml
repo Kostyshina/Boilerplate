@@ -5,7 +5,7 @@
     <color name="colorAccent">@color/colorOrange</color>
 
     <color name="colorBack">#000000</color>
-    <color name="colorBlackTransparent">#CC000000</color>
+    <color name="colorBlackTransparent">#33000000</color>
     <color name="colorGreenLight">#80e27e</color>
     <color name="colorGreen">#4caf50</color>
     <color name="colorGreenDark">#087f23</color>

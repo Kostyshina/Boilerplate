@@ -8,30 +8,10 @@
     tools:context=".activity.BaseActivity">
     <!--tools:openDrawer="start"-->
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/activity_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:theme="@style/ToolBarStyle">
-
-            <TextView
-                android:id="@+id/toolbar_title"
-                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:text="@string/app_name" />
-        </android.support.v7.widget.Toolbar>
-
-        <FrameLayout
-            android:id="@+id/activity_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+        android:layout_height="match_parent" />
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"

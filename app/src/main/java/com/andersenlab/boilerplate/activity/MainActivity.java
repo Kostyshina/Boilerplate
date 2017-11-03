@@ -1,12 +1,12 @@
 package com.andersenlab.boilerplate.activity;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.andersenlab.boilerplate.R;
@@ -50,8 +50,13 @@ public class MainActivity extends BaseActivity implements MainMvpView {
             imageAdapter.setItems(imageList);
         }
 
+        DividerItemDecoration divider = new DividerItemDecoration(
+                this,
+                DividerItemDecoration.VERTICAL
+        );
+        divider.setDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.shape_line_divider));
         imageRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        imageRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayout.VERTICAL));
+        imageRecyclerView.addItemDecoration(divider);
         ((SimpleItemAnimator) imageRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         imageRecyclerView.setAdapter(imageAdapter);
 

@@ -21,7 +21,7 @@ import timber.log.Timber;
  * Behavior class for collapsing/expanding views in CoordinatorLayout
  * on scrolling up or down.
  */
-//TODO class optimisation. saving collapsed/expanded state for the view.
+
 public class ScrollAwareBehavior<V extends View> extends CoordinatorLayout.Behavior<V> {
 
     /* Tracking direction of user motion */
