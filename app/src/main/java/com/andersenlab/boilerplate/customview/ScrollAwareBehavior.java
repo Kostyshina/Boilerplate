@@ -4,11 +4,11 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -18,35 +18,29 @@ import com.andersenlab.boilerplate.R;
 import timber.log.Timber;
 
 /**
- * Behavior class for collapsing/expanding views in CoordinatorLayout.
+ * Behavior class for collapsing/expanding views in CoordinatorLayout
+ * on scrolling up or down.
  */
 //TODO class optimisation. saving collapsed/expanded state for the view.
 public class ScrollAwareBehavior<V extends View> extends CoordinatorLayout.Behavior<V> {
 
-    private static final int DIRECTION_UP = 1;
-    private static final int DIRECTION_DOWN = -1;
-
-    @IntDef({DIRECTION_UP, DIRECTION_DOWN})
-    public @interface ScrollingDirection {
-
-    }
-
     /* Tracking direction of user motion */
-    private @ScrollingDirection int scrollingDirection;
+    private Direction scrollDirection;
     /* Tracking last threshold crossed */
-    private @ScrollingDirection int scrollTrigger;
+    private Direction scrollTrigger;
     /* View is collapsed when you scrolling in that direction */
     private Direction scrollDirectionCollapse;
-    /* Accumulated scroll distance */
+    /* Accumulated scroll distance (pixels) */
     private int scrollDistance;
-    /* Distance threshold to trigger animation */
+    /* Distance threshold to trigger animation (pixels) */
     private int scrollThreshold;
     /* Indicates if view is showing or not */
-    private boolean isExpanded = false;
+    private boolean isExpanded = true;
 
     public ScrollAwareBehavior() {
         Timber.i("default constructor");
-        scrollDirectionCollapse = Direction.BOTTOM;
+        scrollThreshold = 20;
+        scrollDirectionCollapse = Direction.DOWN;
     }
 
     /**
@@ -71,7 +65,7 @@ public class ScrollAwareBehavior<V extends View> extends CoordinatorLayout.Behav
                 R.styleable.ScrollAwareBehavior_behavior_collapse_threshold, defaultThreshold);
         scrollDirectionCollapse = Direction.getDirection(
                 a.getInt(R.styleable.ScrollAwareBehavior_behavior_scroll_direction_collapse,
-                        Direction.BOTTOM.getValue())
+                        Direction.DOWN.getValue())
         );
 
 
@@ -84,13 +78,36 @@ public class ScrollAwareBehavior<V extends View> extends CoordinatorLayout.Behav
     @Override
     public Parcelable onSaveInstanceState(CoordinatorLayout parent, V child) {
         Timber.i("onSaveInstanceState");
-        return super.onSaveInstanceState(parent, child);
+        final Parcelable superState = super.onSaveInstanceState(parent, child);
+
+        final SavedState ss = new SavedState(superState);
+
+        ss.isExpanded = isExpanded;
+        ss.scrollDistance = scrollDistance;
+        ss.scrollDirection = scrollDirection;
+        ss.scrollTrigger = scrollTrigger;
+
+        return ss;
     }
 
     @Override
     public void onRestoreInstanceState(CoordinatorLayout parent, V child, Parcelable state) {
+        if (!(state instanceof SavedState)) {
+            super.onRestoreInstanceState(parent, child, state);
+            return;
+        }
         Timber.i("onRestoreInstanceState");
-        super.onRestoreInstanceState(parent, child, state);
+        final SavedState ss = (SavedState)state;
+        super.onRestoreInstanceState(parent, child, ss.getSuperState());
+
+        isExpanded = ss.isExpanded;
+        scrollDistance = ss.scrollDistance;
+        scrollDirection = ss.scrollDirection;
+        scrollTrigger = ss.scrollTrigger;
+
+        if (!isExpanded) {
+            child.setVisibility(View.INVISIBLE);
+        }
     }
 
     //Called before a nested scroll event. Return true to declare interest
@@ -107,14 +124,9 @@ public class ScrollAwareBehavior<V extends View> extends CoordinatorLayout.Behav
     public void onNestedPreScroll(@NonNull CoordinatorLayout coordinatorLayout,
                                   @NonNull V child, @NonNull View target, int dx, int dy,
                                   @NonNull int[] consumed, int type) {
-        //Timber.i("onNestedPreScroll, dy = " + dy + ", consumed y = " + consumed[1]);
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type);
-        if (dy > 0 && scrollingDirection != DIRECTION_UP) {
-            Timber.i("scroll down");
-            setNewDirection(DIRECTION_UP);
-        } else if (dy < 0 && scrollingDirection != DIRECTION_DOWN) {
-            Timber.i("scroll up");
-            setNewDirection(DIRECTION_DOWN);
+        if (dy != 0) {
+            setNewDirection(dy > 0 ? Direction.DOWN : Direction.UP);
         }
     }
 
@@ -124,64 +136,79 @@ public class ScrollAwareBehavior<V extends View> extends CoordinatorLayout.Behav
                                @NonNull V child, @NonNull View target,
                                int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed,
                                int type) {
-        //Timber.i("onNestedScroll");
-        //Timber.i("scrollDirection = " + scrollingDirection + ", scrollTrigger = " + scrollTrigger);
-        //Timber.i("dyConsumed = " + dyConsumed + ", dyUnconsumed = " + dyUnconsumed);
         super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type);
         //Consumed distance is the actual distance traveled by the scrolling view
         scrollDistance += dyConsumed;
-        //Timber.i("scrollDistance = " + scrollDistance);
-        if (scrollDistance > scrollThreshold
-                && scrollTrigger != DIRECTION_UP) {
-            switchViewVisibility(child, DIRECTION_UP);
-        } else if (scrollDistance < -scrollThreshold
-                && scrollTrigger != DIRECTION_DOWN) {
-            switchViewVisibility(child, DIRECTION_DOWN);
+        if (scrollDistance > scrollThreshold || scrollDistance < -scrollThreshold) {
+            switchViewVisibility(child);
         }
     }
 
-    private void setNewDirection(@ScrollingDirection int direction) {
-        scrollingDirection = direction;
-        scrollDistance = 0;
+    private void setNewDirection(Direction direction) {
+        if (scrollDirection != direction) {
+            scrollDirection = direction;
+            scrollDistance = 0;
+        }
     }
 
-    private void switchViewVisibility(V view, @ScrollingDirection int previousDirection) {
-        scrollTrigger = previousDirection;
-        Timber.i("switchViewVisibility");
-        Timber.i("scrollDirectionCollapse = " + scrollDirectionCollapse + ", scrollTrigger = " + scrollTrigger);
-        if (scrollDirectionCollapse == Direction.TOP) {
-            if (scrollTrigger == DIRECTION_DOWN)
+    private void switchViewVisibility(V view) {
+        if (scrollTrigger != scrollDirection) {
+            scrollTrigger = scrollDirection;
+            Timber.i("switchViewVisibility");
+            Timber.i("scrollDirectionCollapse = " + scrollDirectionCollapse + ", scrollTrigger = " + scrollTrigger);
+            if (scrollTrigger == scrollDirectionCollapse) {
                 hideViews(view);
-            else if (scrollTrigger == DIRECTION_UP)
+            } else {
                 showViews(view);
-        } else if (scrollDirectionCollapse == Direction.BOTTOM) {
-            if (scrollTrigger == DIRECTION_UP)
-                hideViews(view);
-            else if (scrollTrigger == DIRECTION_DOWN)
-                showViews(view);
+            }
         }
+    }
+
+    private float calculateViewY(V view) {
+        Timber.i("calculateViewY");
+        float y = 0;
+        if (!isExpanded) {
+            int gravity = ((CoordinatorLayout.LayoutParams) view.getLayoutParams()).gravity;
+            Timber.i("gravity = " + gravity);
+            if (gravity == Gravity.BOTTOM || gravity == Gravity.TOP) {
+                y = gravity == Gravity.BOTTOM ? view.getHeight() : -view.getHeight();
+            }
+        }
+        Timber.i("y = " + y);
+        return y;
     }
 
     private void hideViews(V view) {
         Timber.i("hideView, viewHeight = " + view.getHeight());
         isExpanded = false;
-        view.animate().translationY(view.getHeight()).setInterpolator(new AccelerateInterpolator(2)).start();
+        view.animate()
+                .translationY(calculateViewY(view))
+                .setInterpolator(new AccelerateInterpolator(2)).start();
     }
 
     private void showViews(V view) {
         Timber.i("showView, viewHeight = " + view.getHeight());
+        if (view.getVisibility() != View.VISIBLE) {
+            Timber.i("invisible view " + view.getY());
+            if (view.getTranslationY() == 0) {
+                view.setTranslationY(calculateViewY(view));
+                view.setVisibility(View.VISIBLE);
+            }
+        }
         isExpanded = true;
-        view.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+        view.animate()
+                .translationY(calculateViewY(view))
+                .setInterpolator(new DecelerateInterpolator(2)).start();
     }
 
     /**
-     * Enum to detect when hide or show view.
-     * Contains values {@link Direction#LEFT}, {@link Direction#TOP}, {@link Direction#RIGHT} and
-     * {@link Direction#BOTTOM} that are detecting to collapse view when moving accordingly
-     * to the left, top, right or bottom. View will be shown when moving on opposite direction.
+     * Enum to detect direction of moving.
+     * Contains values {@link Direction#UP} and {@link Direction#DOWN} that are
+     * detecting to collapse view when moving accordingly to the top or bottom.
+     * View will be shown when moving on opposite direction.
      */
     private enum Direction {
-        LEFT(0), TOP(1), RIGHT(2), BOTTOM(3);
+        UP(1), DOWN(-1);
 
         private final int value;
 
@@ -203,12 +230,16 @@ public class ScrollAwareBehavior<V extends View> extends CoordinatorLayout.Behav
     }
 
     private static class SavedState extends View.BaseSavedState {
+
+        private Direction scrollDirection;
+        private Direction scrollTrigger;
+        private int scrollDistance;
         private boolean isExpanded;
 
         public static final Parcelable.Creator<SavedState> CREATOR =
                 new Parcelable.Creator<SavedState>() {
-                    public SavedState createFromParcel(Parcel in) {
-                        return new SavedState(in);
+                    public SavedState createFromParcel(Parcel source) {
+                        return new SavedState(source);
                     }
 
                     public SavedState[] newArray(int size) {
@@ -220,15 +251,21 @@ public class ScrollAwareBehavior<V extends View> extends CoordinatorLayout.Behav
             super(superState);
         }
 
-        private SavedState(Parcel in) {
-            super(in);
-            this.isExpanded = in.readByte() != 0;
+        private SavedState(Parcel source) {
+            super(source);
+            this.scrollDirection = (Direction) source.readSerializable();
+            this.scrollTrigger = (Direction) source.readSerializable();
+            this.scrollDistance = source.readInt();
+            this.isExpanded = source.readByte() != 0;
         }
 
         @Override
-        public void writeToParcel(Parcel out, int flags) {
-            super.writeToParcel(out, flags);
-            out.writeByte((byte) (this.isExpanded ? 1 : 0));
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeSerializable(this.scrollDirection);
+            dest.writeSerializable(this.scrollTrigger);
+            dest.writeInt(this.scrollDistance);
+            dest.writeByte((byte) (this.isExpanded ? 1 : 0));
         }
     }
 }

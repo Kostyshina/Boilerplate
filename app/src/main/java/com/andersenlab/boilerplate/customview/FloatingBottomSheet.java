@@ -57,8 +57,9 @@ public class FloatingBottomSheet extends FrameLayout {
         View view = LayoutInflater.from(context).inflate(R.layout.floating_bottom_sheet, this, true);
         ButterKnife.bind(this, view);
 
-        flButtonContainer.setBackgroundResource(a.getResourceId(R.styleable.FloatingBottomSheet_android_background,
-                android.R.color.white));
+        flButtonContainer.setBackgroundResource(
+                a.getResourceId(R.styleable.FloatingBottomSheet_android_background,
+                        android.R.color.white));
         btnAction.setText(a.getString(R.styleable.FloatingBottomSheet_android_text));
 
         a.recycle();

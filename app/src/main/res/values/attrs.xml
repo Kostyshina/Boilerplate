@@ -9,10 +9,8 @@
     <declare-styleable name="ScrollAwareBehavior">
         <attr name="behavior_collapse_threshold" format="dimension" />
         <attr name="behavior_scroll_direction_collapse" format="enum" >
-            <enum name="left" value="0"/>
-            <enum name="top" value="1"/>
-            <enum name="right" value="2"/>
-            <enum name="bottom" value="3"/>
+            <enum name="top" value="0"/>
+            <enum name="bottom" value="1"/>
         </attr>
     </declare-styleable>
 </resources>

@@ -37,7 +37,6 @@
         android:id="@+id/fbs_main_add_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible"
         android:layout_gravity="bottom"
         android:text="@string/main_add_item"
         android:background="@color/colorBlackTransparent"
