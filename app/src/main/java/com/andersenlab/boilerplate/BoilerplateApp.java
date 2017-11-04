@@ -5,9 +5,12 @@ import android.os.StrictMode;
 
 import com.andersenlab.boilerplate.model.Image;
 import com.andersenlab.boilerplate.model.db.DatabaseHelper;
+import com.andersenlab.boilerplate.model.realm.RealmInteractor;
 import com.crashlytics.android.Crashlytics;
 
 import io.fabric.sdk.android.Fabric;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import timber.log.Timber;
 
 /**
@@ -42,15 +45,31 @@ public class BoilerplateApp extends Application {
         if (!Fabric.isInitialized()) {
             Fabric.with(this, new Crashlytics());
         }
+
+        Realm.init(this);
+        RealmConfiguration config = new RealmConfiguration.Builder().name("boilerplate.realm").build();
+        Realm.setDefaultConfiguration(config);
+
         if (instance == null) {
             instance = this;
         }
 
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
-        dbHelper.deleteAllImages();
         String[] images = getResources().getStringArray(R.array.image_items);
+        /*DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
+        dbHelper.deleteAllImages();
         for (String image : images) {
             dbHelper.addImage(new Image(null, image));
+        }*/
+
+        RealmInteractor interactor = RealmInteractor.getInstance();
+        if (!interactor.hasObjects(Image.class)) {
+            int i = 0;
+            for (String imageUrl : images) {
+                i++;
+                final Image image = new Image(null, imageUrl);
+                image.setId(i);
+                interactor.addObject(image);
+            }
         }
     }
 }

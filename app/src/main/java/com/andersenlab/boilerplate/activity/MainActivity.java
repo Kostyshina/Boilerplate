@@ -111,7 +111,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
 
     private void loadItem() {
         if (mainPresenter != null) {
-            mainPresenter.loadItem(this);
+            mainPresenter.loadItemFromRealm();
         } else Timber.e("You must initialize presenter first");
     }
 

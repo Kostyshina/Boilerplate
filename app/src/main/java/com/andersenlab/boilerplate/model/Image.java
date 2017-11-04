@@ -1,8 +1,13 @@
 package com.andersenlab.boilerplate.model;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Image extends BaseModel {
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
+
+public class Image extends RealmObject implements Parcelable {
 
     public static final Creator<Image> CREATOR = new Creator<Image>() {
         @Override
@@ -16,8 +21,10 @@ public class Image extends BaseModel {
         }
     };
 
+    @PrimaryKey
     private long id;
     private String contentDescription;
+    @Required
     private String imageUrl;
 
     public Image() {
