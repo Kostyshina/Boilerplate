@@ -6,6 +6,6 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="?actionBarSize"
-    android:theme="@style/ToolBarStyle"
+    app:layout_collapseMode="pin"
     app:layout_scrollFlags="scroll|enterAlways|snap"
     tools:title="@string/app_name" />

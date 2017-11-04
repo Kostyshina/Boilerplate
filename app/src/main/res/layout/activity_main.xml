@@ -6,15 +6,24 @@
     android:id="@+id/cdl_main_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context="com.andersenlab.boilerplate.activity.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="@dimen/height_toolbar_main">
 
-        <include layout="@layout/layout_toolbar"/>
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:theme="@style/ToolBarStyle"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleGravity="top"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+
+            <include layout="@layout/layout_toolbar"/>
+        </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView
@@ -30,6 +39,6 @@
         android:layout_gravity="bottom"
         android:text="@string/main_add_item"
         android:background="@color/colorBlackTransparent"
-        app:layout_behavior=".customview.AppBarAwareBehavior" />
+        app:layout_behavior="" />
 
 </android.support.design.widget.CoordinatorLayout>
