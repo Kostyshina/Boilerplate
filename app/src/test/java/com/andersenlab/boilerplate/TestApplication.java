@@ -5,8 +5,8 @@ import android.app.Application;
 import org.robolectric.RobolectricTestRunner;
 
 /**
- * EmptyApplication for testing with {@link RobolectricTestRunner}.
+ * Test application for testing with {@link RobolectricTestRunner}.
  */
 
-public class EmptyApplication extends Application {
+public class TestApplication extends Application {
 }

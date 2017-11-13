@@ -14,13 +14,14 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Instrumental test class for testing work of {@link Realm} manager.
+ * Instrumental test class for testing work of {@link RealmInteractor} manager on Image objects.
  */
 
-public class RealmInstrumentalTest {
+public class RealmImageInteractorInstrumentalTest {
 
     private Context context;
     private RealmInteractor realmInteractor;
@@ -33,7 +34,7 @@ public class RealmInstrumentalTest {
         RealmConfiguration testConfig =
                 new RealmConfiguration.Builder()
                         .inMemory()
-                        .name("test-realm").build();
+                        .name("test-image.realm").build();
 
         realmInteractor = new RealmInteractor(Realm.getInstance(testConfig));
         cleanRealm();
@@ -45,15 +46,15 @@ public class RealmInstrumentalTest {
 
         String imageUrl = getImageUrl();
 
-        if (imageUrl != null) {
-            Image image = new Image(null, imageUrl);
-            image.setId(1);
-            realmInteractor.addObject(image);
+        assertNotNull("All string urls from resources are null", imageUrl);
 
-            Image imageFromRealm = realmInteractor.getObjectById(Image.class, 1);
-            assertTrue("Adding to realm failed", imageFromRealm != null &&
-                    imageUrl.equals(imageFromRealm.getImageUrl()));
-        }
+        Image image = new Image(null, imageUrl);
+        image.setId(1);
+        realmInteractor.addObject(image);
+
+        Image imageFromRealm = realmInteractor.getObjectById(Image.class, 1);
+        assertTrue("Adding to realm failed", imageFromRealm != null &&
+                imageUrl.equals(imageFromRealm.getImageUrl()));
     }
 
     @Test
@@ -69,14 +70,15 @@ public class RealmInstrumentalTest {
 
         String[] images = context.getResources().getStringArray(R.array.image_items);
 
-        if (!realmInteractor.hasObjects(Image.class)) {
-            int i = 0;
-            for (String imageUrl : images) {
-                i++;
-                final Image image = new Image(null, imageUrl);
-                image.setId(i);
-                realmInteractor.addObject(image);
-            }
+        assertFalse("Realm manager already has Image items",
+                realmInteractor.hasObjects(Image.class));
+
+        int i = 0;
+        for (String imageUrl : images) {
+            i++;
+            final Image image = new Image(null, imageUrl);
+            image.setId(i);
+            realmInteractor.addObject(image);
         }
 
         assertTrue(realmInteractor.getObjects(Image.class).size() == images.length);

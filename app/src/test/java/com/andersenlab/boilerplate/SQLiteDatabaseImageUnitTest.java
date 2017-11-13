@@ -15,26 +15,23 @@ import org.robolectric.annotation.Config;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
- * Local test class for testing SQLite database methods.
+ * Local test class for testing SQLite database methods for {@link Image} table.
  */
-//@RunWith can be replaced by MockitoAnnotations.initMocks(this); in @Before-method
+
 @RunWith(RobolectricTestRunner.class)
-// To use Robolectric you'll need to setup some constants.
-// Change it according to your needs.
-@Config(application = EmptyApplication.class, sdk=26, packageName = "com.andersenlab.boilerplate",
+@Config(application = TestApplication.class, sdk = 26, packageName = "com.andersenlab.boilerplate",
         manifest="src/main/AndroidManifest.xml")
-public class DatabaseUnitTest {
+public class SQLiteDatabaseImageUnitTest {
 
     private Application mockContext;
     private DatabaseHelper dbHelper;
 
     @Before
     public void init() {
-        //MockitoAnnotations.initMocks(this);
-
         mockContext = RuntimeEnvironment.application;
 
         dbHelper = DatabaseHelper.getInstance(mockContext);
@@ -47,12 +44,12 @@ public class DatabaseUnitTest {
 
         String imageUrl = getImageUrl();
 
-        if (imageUrl != null) {
-            long imageId = dbHelper.addImage(new Image(null, imageUrl));
+        assertNotNull("All string urls from resources are null", imageUrl);
 
-            Image image = dbHelper.getImage(imageId);
-            assertTrue("Adding to db failed", image != null && imageUrl.equals(image.getImageUrl()));
-        }
+        long imageId = dbHelper.addImage(new Image(null, imageUrl));
+
+        Image image = dbHelper.getImage(imageId);
+        assertTrue("Adding to db failed", image != null && imageUrl.equals(image.getImageUrl()));
     }
 
     @Test
