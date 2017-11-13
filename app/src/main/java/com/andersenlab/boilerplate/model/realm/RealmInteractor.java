@@ -19,6 +19,10 @@ public class RealmInteractor {
         realm = Realm.getDefaultInstance();
     }
 
+    public RealmInteractor(Realm realm) {
+        this.realm = realm;
+    }
+
     public static synchronized RealmInteractor getInstance() {
         if (instance == null) {
             instance = new RealmInteractor();
@@ -33,6 +37,11 @@ public class RealmInteractor {
     //Refresh the realm instance
     public void refresh() {
         realm.refresh();
+    }
+
+    //Close realm. Must be called if not sigletone instance is used.
+    public void close() {
+        realm.close();
     }
 
     //clear all objects from specific class
@@ -52,7 +61,7 @@ public class RealmInteractor {
     }
 
     //query a single item with the given id
-    public <T extends RealmModel> T getObjectById(Class<T> clazz, String id) {
+    public <T extends RealmModel> T getObjectById(Class<T> clazz, Integer id) {
         return realm.where(clazz).equalTo("id", id).findFirst();
     }
 
