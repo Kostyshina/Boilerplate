@@ -6,6 +6,8 @@ import android.os.StrictMode;
 import com.andersenlab.boilerplate.model.Image;
 import com.andersenlab.boilerplate.model.db.DatabaseHelper;
 import com.andersenlab.boilerplate.model.realm.RealmInteractor;
+import com.andersenlab.boilerplate.model.retrofit.RedditApi;
+import com.andersenlab.boilerplate.model.retrofit.RedditApiBuilder;
 import com.crashlytics.android.Crashlytics;
 
 import io.fabric.sdk.android.Fabric;
@@ -21,8 +23,14 @@ public class BoilerplateApp extends Application {
 
     private static BoilerplateApp instance;
 
+    private RedditApi redditApi;
+
     public static BoilerplateApp getInstance() {
         return instance;
+    }
+
+    public RedditApi getRedditApi() {
+        return redditApi;
     }
 
     @Override
@@ -45,6 +53,8 @@ public class BoilerplateApp extends Application {
         if (!Fabric.isInitialized()) {
             Fabric.with(this, new Crashlytics());
         }
+
+        redditApi = new RedditApiBuilder().getRestApi();
 
         Realm.init(this);
         RealmConfiguration config = new RealmConfiguration.Builder().name("boilerplate.realm").build();

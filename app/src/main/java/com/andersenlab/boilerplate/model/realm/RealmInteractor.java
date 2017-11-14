@@ -55,13 +55,12 @@ public class RealmInteractor {
     public <T extends RealmModel> List<T> getObjects(Class<T> clazz) {
         RealmResults<T> objResult = realm.where(clazz).findAll();
         List<T> objList = new ArrayList<>();
-        for (T obj : objResult)
-            objList.add(obj);
+        objList.addAll(objResult);
         return objList;
     }
 
     //query a single item with the given id
-    public <T extends RealmModel> T getObjectById(Class<T> clazz, Integer id) {
+    public <T extends RealmModel> T getObjectById(Class<T> clazz, int id) {
         return realm.where(clazz).equalTo("id", id).findFirst();
     }
 

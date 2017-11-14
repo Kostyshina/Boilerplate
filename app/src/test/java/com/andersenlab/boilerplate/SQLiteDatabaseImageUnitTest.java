@@ -24,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(application = TestApplication.class, sdk = 26, packageName = "com.andersenlab.boilerplate",
-        manifest="src/main/AndroidManifest.xml")
+        manifest="app/src/main/AndroidManifest.xml")
 public class SQLiteDatabaseImageUnitTest {
 
     private Application mockContext;
