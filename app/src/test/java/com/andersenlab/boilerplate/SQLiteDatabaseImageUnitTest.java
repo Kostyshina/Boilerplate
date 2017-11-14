@@ -15,7 +15,10 @@ import org.robolectric.annotation.Config;
 
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -39,7 +42,7 @@ public class SQLiteDatabaseImageUnitTest {
     }
 
     @Test
-    public void addImageToDb() {
+    public void addImageToDb_shouldBeAdded() {
         clearDb();
 
         String imageUrl = getImageUrl();
@@ -49,11 +52,17 @@ public class SQLiteDatabaseImageUnitTest {
         long imageId = dbHelper.addImage(new Image(null, imageUrl));
 
         Image image = dbHelper.getImage(imageId);
-        assertTrue("Adding to db failed", image != null && imageUrl.equals(image.getImageUrl()));
+        assertNotNull("Adding to db failed", image);
+        assertThat("Adding to db failed", image.getImageUrl(), is(imageUrl));
+        assertNull("Adding to db failed", image.getContentDescription());
     }
 
     @Test
-    public void deleteImagesFromDb() {
+    public void deleteImagesFromDb_shouldDeleteAllImages() {
+        // Adding at least one item
+        String imageUrl = getImageUrl();
+        dbHelper.addImage(new Image(null, imageUrl));
+
         dbHelper.deleteAllImages();
 
         List<Image> images = dbHelper.getAllImages();
