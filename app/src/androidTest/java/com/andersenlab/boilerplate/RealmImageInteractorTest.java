@@ -2,6 +2,7 @@ package com.andersenlab.boilerplate;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.andersenlab.boilerplate.model.Image;
 import com.andersenlab.boilerplate.model.realm.RealmInteractor;
@@ -9,6 +10,7 @@ import com.andersenlab.boilerplate.model.realm.RealmInteractor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -23,6 +25,7 @@ import static org.junit.Assert.assertTrue;
  * Instrumental test class for testing work of {@link RealmInteractor} manager on Image objects.
  */
 
+@RunWith(AndroidJUnit4.class)
 public class RealmImageInteractorTest {
 
     private Context context;
