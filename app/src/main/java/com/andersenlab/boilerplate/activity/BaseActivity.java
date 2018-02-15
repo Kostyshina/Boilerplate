@@ -38,7 +38,7 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout != null && drawerLayout.isDrawerOpen(Gravity.START)) {
+        if (drawerLayout.isDrawerOpen(Gravity.START)) {
             closeDrawer();
         } else
             super.onBackPressed();
@@ -80,7 +80,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void closeDrawer() {
-        if (drawerLayout != null && drawerLayout.isDrawerOpen(Gravity.START)) {
+        if (drawerLayout.isDrawerOpen(Gravity.START)) {
             drawerLayout.closeDrawer(Gravity.START);
         }
     }

@@ -69,8 +69,8 @@ public class ScrollAwareBehavior<V extends View> extends CoordinatorLayout.Behav
         );
 
 
-        Timber.i("scrollThreshold = " + scrollThreshold);
-        Timber.i("scrollDirectionCollapse = " + scrollDirectionCollapse);
+        Timber.i("scrollThreshold = %d", scrollThreshold);
+        Timber.i("scrollDirectionCollapse = %s", scrollDirectionCollapse);
 
         a.recycle();
     }
@@ -155,7 +155,7 @@ public class ScrollAwareBehavior<V extends View> extends CoordinatorLayout.Behav
         if (scrollTrigger != scrollDirection) {
             scrollTrigger = scrollDirection;
             Timber.i("switchViewVisibility");
-            Timber.i("scrollDirectionCollapse = " + scrollDirectionCollapse + ", scrollTrigger = " + scrollTrigger);
+            Timber.i("scrollDirectionCollapse = %s, scrollTrigger = %s", scrollDirectionCollapse, scrollTrigger);
             if (scrollTrigger == scrollDirectionCollapse) {
                 hideViews(view);
             } else {
@@ -169,17 +169,17 @@ public class ScrollAwareBehavior<V extends View> extends CoordinatorLayout.Behav
         float y = 0;
         if (!isExpanded) {
             int gravity = ((CoordinatorLayout.LayoutParams) view.getLayoutParams()).gravity;
-            Timber.i("gravity = " + gravity);
+            Timber.i("gravity = %d", gravity);
             if (gravity == Gravity.BOTTOM || gravity == Gravity.TOP) {
                 y = gravity == Gravity.BOTTOM ? view.getHeight() : -view.getHeight();
             }
         }
-        Timber.i("y = " + y);
+        Timber.i("y = %f", y);
         return y;
     }
 
     private void hideViews(V view) {
-        Timber.i("hideView, viewHeight = " + view.getHeight());
+        Timber.i("hideView, viewHeight = %d", view.getHeight());
         isExpanded = false;
         view.animate()
                 .translationY(calculateViewY(view))
@@ -187,9 +187,9 @@ public class ScrollAwareBehavior<V extends View> extends CoordinatorLayout.Behav
     }
 
     private void showViews(V view) {
-        Timber.i("showView, viewHeight = " + view.getHeight());
+        Timber.i("showView, viewHeight = %d", view.getHeight());
         if (view.getVisibility() != View.VISIBLE) {
-            Timber.i("invisible view " + view.getY());
+            Timber.i("invisible view - %f", view.getY());
             if (view.getTranslationY() == 0) {
                 view.setTranslationY(calculateViewY(view));
                 view.setVisibility(View.VISIBLE);

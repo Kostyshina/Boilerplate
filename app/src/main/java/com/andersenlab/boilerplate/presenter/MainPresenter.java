@@ -41,7 +41,7 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
 
     private void loadItem() {
         if (isViewAttached() && images != null) {
-            Timber.i("images count = " + images.size());
+            Timber.i("images count = %d", images.size());
 
             if (images.isEmpty())
                 getMvpView().showNoNewItem();

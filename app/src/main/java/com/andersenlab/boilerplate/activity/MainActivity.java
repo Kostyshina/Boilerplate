@@ -1,5 +1,6 @@
 package com.andersenlab.boilerplate.activity;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
@@ -16,6 +17,8 @@ import com.andersenlab.boilerplate.model.Image;
 import com.andersenlab.boilerplate.presenter.MainPresenter;
 import com.andersenlab.boilerplate.view.MainMvpView;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -54,7 +57,11 @@ public class MainActivity extends BaseActivity implements MainMvpView {
                 this,
                 DividerItemDecoration.VERTICAL
         );
-        divider.setDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.shape_line_divider));
+        Reference<Drawable> drawableWeakReference =
+                new WeakReference<>(ContextCompat.getDrawable(getBaseContext(), R.drawable.shape_line_divider));
+        if (drawableWeakReference.get() != null) {
+            divider.setDrawable(drawableWeakReference.get());
+        }
         imageRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         imageRecyclerView.addItemDecoration(divider);
         ((SimpleItemAnimator) imageRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
@@ -91,7 +98,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     @Override
     public void showNewItem(Image item) {
         addItemToList(item);
-        Timber.i("showNewItem " + item.getId());
+        Timber.i("showNewItem %d", item.getId());
     }
 
     @Override

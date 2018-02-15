@@ -142,7 +142,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.delete(tableName, whereClause, args);
             db.setTransactionSuccessful();
         } catch (Exception e) {
-            Timber.e(e, e.getClass().getCanonicalName());
+            Timber.e(e);
         } finally {
             db.endTransaction();
             close();
