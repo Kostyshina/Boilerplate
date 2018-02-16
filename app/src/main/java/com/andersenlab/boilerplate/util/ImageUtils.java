@@ -1,10 +1,10 @@
 package com.andersenlab.boilerplate.util;
 
-import android.content.Context;
 import android.widget.ImageView;
 
 import com.andersenlab.boilerplate.R;
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 
 public class ImageUtils {
@@ -26,19 +26,18 @@ public class ImageUtils {
      * Method that used for loading images into imageView.
      * Using {@link com.andersenlab.boilerplate.R.color#colorError} on error or fallback occurred
      * and {@link com.andersenlab.boilerplate.R.color#colorPlaceholder} as placeholder on loading.
-     * @param context Context for loading image (keep in mind Glide lifecycle);
+     * @param glideRequest manager to perform Glide loading (keep in mind Glide lifecycle);
      * @param imageUrl Url of an image to load;
      * @param target ImageView to load image into.
      */
-    public void loadImage(Context context, String imageUrl, ImageView target) {
-        if (context!= null && target != null) {
+    public void loadImage(RequestManager glideRequest, String imageUrl, ImageView target) {
+        if (target != null) {
             RequestOptions options = new RequestOptions()
                     .placeholder(R.color.colorPlaceholder)
                     .error(R.color.colorError)
                     .fallback(R.color.colorError)
-                    .dontTransform()
-                    .disallowHardwareConfig();
-            Glide.with(context)
+                    .dontTransform();
+            glideRequest
                     .load(imageUrl)
                     .thumbnail(0.1f)
                     .apply(options)
@@ -46,7 +45,19 @@ public class ImageUtils {
         }
     }
 
-    public void clearView(Context context, ImageView view) {
-        Glide.with(context).clear(view);
+    public RequestBuilder preloadImage(RequestManager glideRequest, String imageUrl) {
+        RequestOptions options = new RequestOptions()
+                .placeholder(R.color.colorPlaceholder)
+                .error(R.color.colorError)
+                .fallback(R.color.colorError)
+                .dontTransform();
+        return glideRequest
+                .load(imageUrl)
+                .thumbnail(0.1f)
+                .apply(options);
+    }
+
+    public void clearView(RequestManager glideRequest, ImageView view) {
+        glideRequest.clear(view);
     }
 }

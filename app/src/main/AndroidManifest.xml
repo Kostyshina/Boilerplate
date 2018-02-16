@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.andersenlab.boilerplate">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.andersenlab.boilerplate">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -26,5 +27,8 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="8e0d09d7a69982a5ddf712600e52df6043e1a4f2" />
+
+        <!--<meta-data android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
+                   tools:node="remove" />-->
     </application>
 </manifest>

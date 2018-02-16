@@ -16,6 +16,8 @@ import com.andersenlab.boilerplate.customview.FloatingBottomSheet;
 import com.andersenlab.boilerplate.model.Image;
 import com.andersenlab.boilerplate.presenter.MainPresenter;
 import com.andersenlab.boilerplate.view.MainMvpView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -40,7 +42,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        imageAdapter = new ImageAdapter(this);
+        imageAdapter = new ImageAdapter(Glide.with(this));
 
         if (savedInstanceState != null) {
             imageList = savedInstanceState.getParcelableArrayList(IMAGES_BUNDLE_KEY);
@@ -52,6 +54,12 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         if (!imageList.isEmpty()) {
             imageAdapter.setItems(imageList);
         }
+
+        RecyclerViewPreloader<Image> preloader =
+                new RecyclerViewPreloader<>(this, imageAdapter,
+                        imageAdapter.getPreloadSizeProvider(), 6);
+        imageRecyclerView.addOnScrollListener(preloader);
+        imageRecyclerView.setItemViewCacheSize(0);
 
         DividerItemDecoration divider = new DividerItemDecoration(
                 this,

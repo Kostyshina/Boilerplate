@@ -1,6 +1,8 @@
 package com.andersenlab.boilerplate.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +13,14 @@ import com.andersenlab.boilerplate.R;
 import com.andersenlab.boilerplate.adapter.viewholder.BaseViewHolder;
 import com.andersenlab.boilerplate.model.Image;
 import com.andersenlab.boilerplate.util.ImageUtils;
+import com.bumptech.glide.ListPreloader.PreloadSizeProvider;
+import com.bumptech.glide.ListPreloader.PreloadModelProvider;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -23,14 +31,17 @@ import timber.log.Timber;
  * RecyclerView adapter for {@link Image} model items.
  */
 
-public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
+public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder>
+        implements PreloadModelProvider<Image>{
 
-    private Context context;
+    private RequestManager glideRequest;
     private List<Image> items;
+    private ViewPreloadSizeProvider<Image> preloadSizeProvider;
 
-    public ImageAdapter(Context context) {
-        this.context = context;
+    public ImageAdapter(RequestManager glideRequest) {
+        this.glideRequest = glideRequest;
         this.items = new ArrayList<>();
+        this.preloadSizeProvider = new ViewPreloadSizeProvider<>();
     }
 
     @Override
@@ -39,7 +50,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                 .inflate(R.layout.item_image, parent, false);
         // set the view's size, margins, paddings and layout parameters
 
-        return new ImageViewHolder(view);
+        ImageViewHolder holder = new ImageViewHolder(view);
+        preloadSizeProvider.setView(holder.contentImage);
+
+        return holder;
     }
 
     @Override
@@ -56,7 +70,22 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @Override
     public void onViewRecycled(ImageViewHolder holder) {
         holder.clearContent();
-        super.onViewRecycled(holder);
+    }
+
+    @NonNull
+    @Override
+    public List<Image> getPreloadItems(int position) {
+        Image imageItem = items.get(position);
+        if (imageItem == null) {
+            return Collections.emptyList();
+        }
+        return Collections.singletonList(imageItem);
+    }
+
+    @Nullable
+    @Override
+    public RequestBuilder getPreloadRequestBuilder(Image imageItem) {
+        return ImageUtils.getInstance().preloadImage(glideRequest, imageItem.getImageUrl());
     }
 
     public void setItems(List<Image> items) {
@@ -72,6 +101,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         Timber.i("addItem");
     }
 
+    public PreloadSizeProvider<Image> getPreloadSizeProvider() {
+        return preloadSizeProvider;
+    }
+
     class ImageViewHolder extends BaseViewHolder<Image> {
 
         @BindView(R.id.iv_image_content) ImageView contentImage;
@@ -83,13 +116,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
         @Override
         public void bind(Image imageItem) {
-            ImageUtils.getInstance().loadImage(context, imageItem.getImageUrl(), contentImage);
+            ImageUtils.getInstance().loadImage(glideRequest, imageItem.getImageUrl(), contentImage);
             contentImage.setContentDescription(imageItem.getContentDescription() != null ?
                     imageItem.getContentDescription() : imageItem.getImageUrl());
         }
 
         void clearContent() {
-            ImageUtils.getInstance().clearView(context, contentImage);
+            ImageUtils.getInstance().clearView(glideRequest, contentImage);
         }
     }
 }
