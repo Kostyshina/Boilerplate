@@ -11,15 +11,18 @@
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout_main"
+        android:elevation="0dp"
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_toolbar_main">
 
         <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:theme="@style/ToolBarStyle"
+            app:expandedTitleMarginEnd="24dp"
+            app:expandedTitleMarginStart="24dp"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleGravity="top"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <include layout="@layout/layout_toolbar"/>
@@ -39,6 +42,7 @@
         android:layout_gravity="bottom"
         android:text="@string/main_add_item"
         android:background="@color/colorBlackTransparent"
+        android:visibility="invisible"
         app:layout_behavior="" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -33,7 +33,7 @@ import butterknife.Unbinder;
 import timber.log.Timber;
 
 public class ImagesFragment extends BaseFragment implements ImageMvpView,
-        MainActivity.OnAddItemClickListener{
+        MainActivity.OnAddItemClickListener, MainActivity.CollapsingToolbarBehavior {
 
     private static final String PRESENTER_BUNDLE_KEY = "com.andersenlab.boilerplate.fragment.presenter";
     private static final String IMAGES_BUNDLE_KEY = "com.andersenlab.boilerplate.fragment.imageList";
@@ -45,6 +45,7 @@ public class ImagesFragment extends BaseFragment implements ImageMvpView,
 
     private ImagePresenter imagePresenter;
     private ImageAdapter imageAdapter;
+    private LinearLayoutManager layoutManager;
     private ArrayList<Image> imageList;
     private LoadingRepository imagesRepository;
 
@@ -109,7 +110,8 @@ public class ImagesFragment extends BaseFragment implements ImageMvpView,
         if (drawableWeakReference.get() != null) {
             divider.setDrawable(drawableWeakReference.get());
         }
-        imageRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        layoutManager = new LinearLayoutManager(getContext());
+        imageRecyclerView.setLayoutManager(layoutManager);
         imageRecyclerView.addItemDecoration(divider);
         ((SimpleItemAnimator) imageRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         imageRecyclerView.setAdapter(imageAdapter);
@@ -127,7 +129,13 @@ public class ImagesFragment extends BaseFragment implements ImageMvpView,
     }
 
     @Override
+    public boolean isLastElementVisible() {
+        return layoutManager.findLastCompletelyVisibleItemPosition() == imageList.size()-1;
+    }
+
+    @Override
     public void addItem() {
+        Timber.i("addItem type: %s", imagesRepository.toString());
         if (imagePresenter != null) {
             switch (imagesRepository) {
                 case LOAD_FROM_DB:

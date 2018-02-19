@@ -5,6 +5,11 @@
     <string name="navigation_drawer_close">Close drawer</string>
 
     <string name="text_hello_world">Hello world!</string>
+    <string name="toast_feature_not_implemented">Feature is not implemented yet</string>
+
+    <!-- Menu screen -->
+    <string name="navigation_database_title">Database</string>
+    <string name="navigation_network_title">Network</string>
 
     <!-- Main Activity screen -->
     <string name="main_add_item">Add item</string>
