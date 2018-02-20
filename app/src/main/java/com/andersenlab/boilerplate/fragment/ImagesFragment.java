@@ -33,7 +33,7 @@ import butterknife.Unbinder;
 import timber.log.Timber;
 
 public class ImagesFragment extends BaseFragment implements ImageMvpView,
-        MainActivity.OnAddItemClickListener, MainActivity.CollapsingToolbarBehavior {
+        MainActivity.OnAddItemClickListener {
 
     private static final String PRESENTER_BUNDLE_KEY = "com.andersenlab.boilerplate.fragment.presenter";
     private static final String IMAGES_BUNDLE_KEY = "com.andersenlab.boilerplate.fragment.imageList";
@@ -45,7 +45,6 @@ public class ImagesFragment extends BaseFragment implements ImageMvpView,
 
     private ImagePresenter imagePresenter;
     private ImageAdapter imageAdapter;
-    private LinearLayoutManager layoutManager;
     private ArrayList<Image> imageList;
     private LoadingRepository imagesRepository;
 
@@ -101,18 +100,6 @@ public class ImagesFragment extends BaseFragment implements ImageMvpView,
         imageRecyclerView.addOnScrollListener(preloader);
         imageRecyclerView.setItemViewCacheSize(0);
 
-        DividerItemDecoration divider = new DividerItemDecoration(
-                getContext(),
-                DividerItemDecoration.VERTICAL
-        );
-        Reference<Drawable> drawableWeakReference =
-                new WeakReference<>(ContextCompat.getDrawable(getContext(), R.drawable.shape_line_divider));
-        if (drawableWeakReference.get() != null) {
-            divider.setDrawable(drawableWeakReference.get());
-        }
-        layoutManager = new LinearLayoutManager(getContext());
-        imageRecyclerView.setLayoutManager(layoutManager);
-        imageRecyclerView.addItemDecoration(divider);
         ((SimpleItemAnimator) imageRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         imageRecyclerView.setAdapter(imageAdapter);
 
@@ -122,15 +109,28 @@ public class ImagesFragment extends BaseFragment implements ImageMvpView,
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (getContext() != null) {
+            DividerItemDecoration divider = new DividerItemDecoration(
+                    getContext(),
+                    DividerItemDecoration.VERTICAL
+            );
+            Reference<Drawable> drawableWeakReference =
+                    new WeakReference<>(ContextCompat.getDrawable(getContext(), R.drawable.shape_line_divider));
+            if (drawableWeakReference.get() != null) {
+                divider.setDrawable(drawableWeakReference.get());
+            }
+            imageRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            imageRecyclerView.addItemDecoration(divider);
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(IMAGES_BUNDLE_KEY, imageList);
         outState.putParcelable(PRESENTER_BUNDLE_KEY, imagePresenter);
-    }
-
-    @Override
-    public boolean isLastElementVisible() {
-        return layoutManager.findLastCompletelyVisibleItemPosition() == imageList.size()-1;
     }
 
     @Override

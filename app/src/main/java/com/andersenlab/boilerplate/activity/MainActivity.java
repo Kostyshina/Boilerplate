@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.andersenlab.boilerplate.R;
-import com.andersenlab.boilerplate.customview.AppBarBehavior;
 import com.andersenlab.boilerplate.customview.FloatingBottomSheet;
 
 import butterknife.BindView;
@@ -24,14 +23,6 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.fbs_main_add_item) FloatingBottomSheet addItem;
     @BindView(R.id.fragment_container_main) FrameLayout fragmentContainer;
 
-    public interface OnAddItemClickListener {
-        void addItem();
-    }
-
-    public interface CollapsingToolbarBehavior {
-        boolean isLastElementVisible();
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +33,9 @@ public class MainActivity extends BaseActivity {
         }
 
         CoordinatorLayout.LayoutParams appBarLayoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-        appBarLayoutParams.setBehavior(new AppBarBehavior(this::isNeedScroll));
+        AppBarLayout.Behavior behavior = new AppBarLayout.Behavior();
+        behavior.setDragCallback(new AppBarDragCallback());
+        appBarLayoutParams.setBehavior(behavior);
         appBarLayout.setLayoutParams(appBarLayoutParams);
 
         addItem.setOnClickListener(this::onAddItemClicked);
@@ -83,19 +76,15 @@ public class MainActivity extends BaseActivity {
         return getString(R.string.app_name);
     }
 
-    public boolean isNeedScroll() {
-        Timber.i("isNeedScroll");
-        Fragment currentFragment = fragmentManager.findFragmentById(getFragmentContainer());
-        if (currentFragment instanceof CollapsingToolbarBehavior)
-            return (((CollapsingToolbarBehavior) currentFragment).isLastElementVisible());
-        else return false;
-    }
-
     private void onAddItemClicked(View view) {
         Timber.i("Tap on add item button");
         Fragment currentFragment = fragmentManager.findFragmentById(getFragmentContainer());
         if (currentFragment instanceof OnAddItemClickListener) {
             ((OnAddItemClickListener) currentFragment).addItem();
         }
+    }
+
+    public interface OnAddItemClickListener {
+        void addItem();
     }
 }

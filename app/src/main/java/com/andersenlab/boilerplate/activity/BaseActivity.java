@@ -5,6 +5,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -63,7 +64,7 @@ public class BaseActivity extends AppCompatActivity implements
     public void onBackStackChanged() {
         Timber.i("onBackStackChanged");
         Fragment fragment = fragmentManager.findFragmentById(getFragmentContainer());
-        Timber.i("fragment = " + fragment);
+        Timber.i("fragment = %s", fragment);
         if (fragment != null) {
             String tag = fragment.getTag();
             navigationView.getMenu().findItem(Integer.valueOf(tag)).setChecked(true);
@@ -190,5 +191,13 @@ public class BaseActivity extends AppCompatActivity implements
         }
         closeDrawer();
         return false;
+    }
+
+    protected class AppBarDragCallback extends AppBarLayout.Behavior.DragCallback {
+        @Override
+        public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
+            Timber.i("canDrag");
+            return false;
+        }
     }
 }
