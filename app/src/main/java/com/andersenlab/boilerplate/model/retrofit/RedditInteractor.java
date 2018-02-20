@@ -22,6 +22,7 @@ public class RedditInteractor {
 
     private static RedditInteractor instance;
     private RedditApi redditApi;
+    private RedditImage prevRedditImage;
 
     private RedditInteractor() {
         redditApi = BoilerplateApp.getInstance().getRedditApi();
@@ -41,8 +42,16 @@ public class RedditInteractor {
      */
     public Observable<RedditImage> getRedditImage(int imagesCount) {
         Timber.i("getRedditImage");
-        return redditApi.getImages(imagesCount)
-                .subscribeOn(Schedulers.io());
+        Observable<RedditImage> redditImageObservable = redditApi.getImages(imagesCount);
+        if (prevRedditImage != null) {
+            Data data = prevRedditImage.getData();
+            if (data != null && data.getAfter() != null) {
+                redditImageObservable = redditApi.getImages(imagesCount, data.getAfter());
+            }
+        }
+        return redditImageObservable
+                .subscribeOn(Schedulers.io())
+                .doOnNext(redditImage -> prevRedditImage = redditImage);
     }
 
     public List<Child> mapChildList(RedditImage redditImage) {

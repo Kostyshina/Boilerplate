@@ -7,6 +7,10 @@ import java.util.List;
 
 public class Data {
 
+    @SerializedName("after")
+    @Expose
+    private String after;
+
     @SerializedName("children")
     @Expose
     private List<Child> children = null;
@@ -14,6 +18,14 @@ public class Data {
     @SerializedName("preview")
     @Expose
     private Preview preview;
+
+    public String getAfter() {
+        return after;
+    }
+
+    public void setAfter(String after) {
+        this.after = after;
+    }
 
     public List<Child> getChildren() {
         return children;

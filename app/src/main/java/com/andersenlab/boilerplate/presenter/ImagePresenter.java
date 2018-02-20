@@ -67,11 +67,13 @@ public class ImagePresenter extends BasePresenter<ImageMvpView> implements Parce
     }
 
     public void loadItemThroughRetrofit() {
-        if (images == null) {
+        if (images == null)
+            images = new ArrayList<>();
+
+        if (images.isEmpty()) {
             Timber.i("initialize images, NETWORK");
             RedditInteractor redditInteractor = RedditInteractor.getInstance();
-            images = new ArrayList<>();
-            redditInteractor.getRedditImage(20)
+            redditInteractor.getRedditImage(1)
                     .flatMap(redditImage -> Observable.fromIterable(redditInteractor.mapUrlsList(redditImage)))
                     .map(url -> {
                         Timber.i("url = %s", url);

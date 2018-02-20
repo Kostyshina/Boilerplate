@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 
 import com.andersenlab.boilerplate.R;
 import com.andersenlab.boilerplate.customview.FloatingBottomSheet;
+import com.andersenlab.boilerplate.fragment.ImagesFragment;
 
 import butterknife.BindView;
 import timber.log.Timber;
@@ -22,6 +23,21 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.collapsing_toolbar_main) CollapsingToolbarLayout collapsingToolbar;
     @BindView(R.id.fbs_main_add_item) FloatingBottomSheet addItem;
     @BindView(R.id.fragment_container_main) FrameLayout fragmentContainer;
+
+    private ImagesFragment.ImagesLoadingListener itemAddedListener =
+            new ImagesFragment.ImagesLoadingListener() {
+                @Override
+                public void onSuccess() {
+                    Timber.i("item added");
+                    addItem.setEnabled(true);
+                }
+
+                @Override
+                public void onError() {
+                    Timber.i("no item was added");
+                    addItem.setEnabled(true);
+                }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +91,11 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    protected ImagesFragment.ImagesLoadingListener getImagesLoadingListener() {
+        return itemAddedListener;
+    }
+
+    @Override
     public String getToolbarTitle() {
         return getString(R.string.app_name);
     }
@@ -83,6 +104,7 @@ public class MainActivity extends BaseActivity {
         Timber.i("Tap on add item button");
         Fragment currentFragment = fragmentManager.findFragmentById(getFragmentContainer());
         if (currentFragment instanceof OnAddItemClickListener) {
+            addItem.setEnabled(false);
             ((OnAddItemClickListener) currentFragment).addItem();
         }
     }

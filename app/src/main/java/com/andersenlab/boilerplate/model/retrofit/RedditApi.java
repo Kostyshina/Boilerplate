@@ -15,4 +15,7 @@ public interface RedditApi {
 
     @GET("r/EarthPorn/new.json")
     Observable<RedditImage> getImages(@Query("limit") int count);
+
+    @GET("r/EarthPorn/new.json")
+    Observable<RedditImage> getImages(@Query("limit") int count, @Query("after") String after);
 }

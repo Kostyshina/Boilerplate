@@ -73,6 +73,11 @@ public class FloatingBottomSheet extends FrameLayout {
         btnAction.setOnClickListener(v -> onSendClick());
     }
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        btnAction.setEnabled(enabled);
+    }
+
     public void setOnClickListener(OnClickListener listener) {
         onActionClickListener = listener;
     }

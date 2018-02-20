@@ -108,6 +108,15 @@ public class BaseActivity extends AppCompatActivity implements
     }
 
     /**
+     * Override this method if you want to get loading status updates from menu item
+     * {@link ImagesFragment}.
+     * @return Listener that would receive updates.
+     */
+    protected ImagesFragment.ImagesLoadingListener getImagesLoadingListener() {
+        return null;
+    }
+
+    /**
      * Override this method if your activity needs some updates in when fragment is added to layout
      * (default not set).
      */
@@ -171,18 +180,26 @@ public class BaseActivity extends AppCompatActivity implements
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Fragment fragment = null;
         String tag = String.valueOf(item.getItemId());
-        switch (item.getItemId()) {
-            case R.id.item_navigation_database:
-                fragment = ImagesFragment.newInstance(ImagesFragment.LoadingRepository.LOAD_FROM_REALM);
-                break;
-            case R.id.item_navigation_network:
-                fragment = ImagesFragment.newInstance(ImagesFragment.LoadingRepository.LOAD_FROM_NETWORK);
-                break;
-            default:
-                Toast.makeText(this, R.string.toast_feature_not_implemented, Toast.LENGTH_SHORT).show();
-        }
+        if (fragmentManager.findFragmentByTag(tag) != null) {
+            fragment = fragmentManager.findFragmentByTag(tag);
+        } else
+            switch (item.getItemId()) {
+                case R.id.item_navigation_database:
+                    fragment = ImagesFragment.newInstance(ImagesFragment.LoadingRepository.LOAD_FROM_REALM,
+                            getImagesLoadingListener());
+                    break;
+                case R.id.item_navigation_network:
+                    fragment = ImagesFragment.newInstance(ImagesFragment.LoadingRepository.LOAD_FROM_NETWORK,
+                            getImagesLoadingListener());
+                    break;
+                default:
+                    Toast.makeText(this, R.string.toast_feature_not_implemented, Toast.LENGTH_SHORT).show();
+            }
+
         if (fragment != null) {
-            if (fragmentManager.findFragmentByTag(tag) == null) {
+            @IdRes int fragmentContainer = getFragmentContainer();
+            Fragment currentFragment = fragmentManager.findFragmentById(fragmentContainer);
+            if (currentFragment == null || !tag.equals(currentFragment.getTag())) {
                 fragmentManager.beginTransaction()
                         .replace(getFragmentContainer(), getFragmentWithBundle(fragment), tag)
                         .addToBackStack(null)

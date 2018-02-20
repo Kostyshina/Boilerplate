@@ -23,6 +23,7 @@ import com.andersenlab.boilerplate.view.ImageMvpView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 
+import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class ImagesFragment extends BaseFragment implements ImageMvpView,
     private static final String PRESENTER_BUNDLE_KEY = "com.andersenlab.boilerplate.fragment.presenter";
     private static final String IMAGES_BUNDLE_KEY = "com.andersenlab.boilerplate.fragment.imageList";
     private static final String LOADING_REPOSITORY_BUNDLE_KEY = "com.andersenlab.boilerplate.fragment.loadingRepository";
+    private static final String LOADING_LISTENER_BUNDLE_KEY = "com.andersenlab.boilerplate.fragment.loadingListener";
 
     @BindView(R.id.rv_image_list_items) RecyclerView imageRecyclerView;
 
@@ -48,14 +50,13 @@ public class ImagesFragment extends BaseFragment implements ImageMvpView,
     private ArrayList<Image> imageList;
     private LoadingRepository imagesRepository;
 
-    public enum LoadingRepository {
-        LOAD_FROM_REALM, LOAD_FROM_DB, LOAD_FROM_NETWORK
-    }
+    private ImagesLoadingListener listener;
 
-    public static ImagesFragment newInstance(LoadingRepository loadingRepository) {
+    public static ImagesFragment newInstance(LoadingRepository loadingRepository, ImagesLoadingListener listener) {
         ImagesFragment fragment = new ImagesFragment();
         Bundle args = new Bundle();
         args.putString(LOADING_REPOSITORY_BUNDLE_KEY, loadingRepository.name());
+        args.putSerializable(LOADING_LISTENER_BUNDLE_KEY, listener);
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,6 +78,7 @@ public class ImagesFragment extends BaseFragment implements ImageMvpView,
         if (getArguments() != null) {
             loadingRepositoryName = getArguments()
                     .getString(LOADING_REPOSITORY_BUNDLE_KEY, LoadingRepository.LOAD_FROM_REALM.name());
+            listener = (ImagesLoadingListener) getArguments().getSerializable(LOADING_LISTENER_BUNDLE_KEY);
         }
         imagesRepository = LoadingRepository.valueOf(loadingRepositoryName);
 
@@ -149,23 +151,35 @@ public class ImagesFragment extends BaseFragment implements ImageMvpView,
                     break;
                 default:
                     Timber.e("Requested loading repository is not available");
+                    if (listener != null)
+                        listener.onError();
             }
-        } else Timber.e("You must initialize presenter first");
+        } else {
+            Timber.e("You must initialize presenter first");
+            if (listener != null)
+                listener.onError();
+        }
     }
 
     @Override
     public void showNewImage(Image item) {
         addItemToList(item);
+        if (listener != null)
+            listener.onSuccess();
         Timber.i("showNewItem %d", item.getId());
     }
 
     @Override
     public void showNoNewImages() {
+        if (listener != null)
+            listener.onError();
         Toast.makeText(getActivity(), R.string.main_no_items, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void showError(MvpViewException exc) {
+        if (listener != null)
+            listener.onError();
         Timber.e(exc);
     }
 
@@ -180,5 +194,14 @@ public class ImagesFragment extends BaseFragment implements ImageMvpView,
         super.onDestroyView();
         unbinder.unbind();
         imagePresenter.detachView();
+    }
+
+    public enum LoadingRepository {
+        LOAD_FROM_REALM, LOAD_FROM_DB, LOAD_FROM_NETWORK
+    }
+
+    public interface ImagesLoadingListener extends Serializable {
+        void onSuccess();
+        void onError();
     }
 }
