@@ -45,6 +45,13 @@ public class ImageUtils {
         }
     }
 
+    /**
+     * Method that used for loading images afterwords.
+     * @param glideRequest manager to perform Glide loading (keep in mind Glide lifecycle);
+     * @param imageUrl Url of an image to load;
+     * @return Instance of {@link RequestBuilder} to load image into.
+     * @see ImageUtils#loadImage(RequestManager, String, ImageView)
+     */
     public RequestBuilder preloadImage(RequestManager glideRequest, String imageUrl) {
         RequestOptions options = new RequestOptions()
                 .placeholder(R.color.colorPlaceholder)

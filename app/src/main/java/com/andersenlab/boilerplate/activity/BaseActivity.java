@@ -196,7 +196,6 @@ public class BaseActivity extends AppCompatActivity implements
     protected class AppBarDragCallback extends AppBarLayout.Behavior.DragCallback {
         @Override
         public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
-            Timber.i("canDrag");
             return false;
         }
     }

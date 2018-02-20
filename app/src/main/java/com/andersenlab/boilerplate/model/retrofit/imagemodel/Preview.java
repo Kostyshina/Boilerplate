@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-class Preview {
+public class Preview {
 
     @SerializedName("images")
     @Expose

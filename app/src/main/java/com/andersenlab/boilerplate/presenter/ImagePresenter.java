@@ -7,12 +7,15 @@ import android.os.Parcelable;
 import com.andersenlab.boilerplate.model.Image;
 import com.andersenlab.boilerplate.model.db.DatabaseHelper;
 import com.andersenlab.boilerplate.model.realm.RealmInteractor;
+import com.andersenlab.boilerplate.model.retrofit.RedditInteractor;
 import com.andersenlab.boilerplate.view.ImageMvpView;
 import com.andersenlab.boilerplate.view.MvpView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 /**
@@ -47,7 +50,7 @@ public class ImagePresenter extends BasePresenter<ImageMvpView> implements Parce
 
     public void loadItemFromDb(Context context) {
         if (images == null) {
-            Timber.i("initialize images");
+            Timber.i("initialize images, DB");
             DatabaseHelper dbHelper =
                     DatabaseHelper.getInstance(context.getApplicationContext());
             images = new ArrayList<>(dbHelper.getAllImages());
@@ -57,14 +60,31 @@ public class ImagePresenter extends BasePresenter<ImageMvpView> implements Parce
 
     public void loadItemFromRealm() {
         if (images == null) {
-            Timber.i("initialize images");
+            Timber.i("initialize images, REALM");
             images = RealmInteractor.getInstance().getObjects(Image.class);
         }
         loadItem();
     }
 
     public void loadItemThroughRetrofit() {
-        //TODO need implementation
+        if (images == null) {
+            Timber.i("initialize images, NETWORK");
+            RedditInteractor redditInteractor = RedditInteractor.getInstance();
+            images = new ArrayList<>();
+            redditInteractor.getRedditImage(20)
+                    .flatMap(redditImage -> Observable.fromIterable(redditInteractor.mapUrlsList(redditImage)))
+                    .map(url -> {
+                        Timber.i("url = %s", url);
+                        Image image = new Image();
+                        image.setId(1);
+                        image.setImageUrl(url);
+                        image.setContentDescription(url);
+                        return image;
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(images::add, Timber::e, this::loadItem);
+        } else
+            loadItem();
     }
 
     public void resetItems() {

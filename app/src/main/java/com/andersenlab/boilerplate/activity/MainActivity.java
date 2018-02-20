@@ -19,7 +19,7 @@ public class MainActivity extends BaseActivity {
     private static final String ADD_ITEM_BUNDLE = "com.andersenlab.boilerplate.activity.addItem";
 
     @BindView(R.id.app_bar_layout_main) AppBarLayout appBarLayout;
-    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbar;
+    @BindView(R.id.collapsing_toolbar_main) CollapsingToolbarLayout collapsingToolbar;
     @BindView(R.id.fbs_main_add_item) FloatingBottomSheet addItem;
     @BindView(R.id.fragment_container_main) FrameLayout fragmentContainer;
 
@@ -48,7 +48,10 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected Fragment getFragmentWithBundle(Fragment fragment) {
-        Bundle args = new Bundle();
+        Bundle args = fragment.getArguments();
+        if (args == null)
+            args = new Bundle();
+
         args.putBoolean(ADD_ITEM_BUNDLE, fragment instanceof OnAddItemClickListener);
 
         fragment.setArguments(args);

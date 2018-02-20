@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-class Data {
+public class Data {
 
     @SerializedName("children")
     @Expose

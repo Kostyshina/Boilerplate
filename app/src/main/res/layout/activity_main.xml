@@ -16,12 +16,12 @@
         android:layout_height="@dimen/height_toolbar_main">
 
         <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar"
+            android:id="@+id/collapsing_toolbar_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:theme="@style/ToolBarStyle"
-            app:expandedTitleMarginEnd="24dp"
-            app:expandedTitleMarginStart="24dp"
+            app:expandedTitleMarginEnd="@dimen/margin_collapsing_toolbar_main_end"
+            app:expandedTitleMarginStart="@dimen/margin_collapsing_toolbar_main_start"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 

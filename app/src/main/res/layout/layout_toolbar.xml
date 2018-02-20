@@ -13,4 +13,3 @@
     app:layout_collapseMode="pin"
     app:layout_scrollFlags="scroll|enterAlways|snap"
     tools:title="@string/app_name" />
-<!--app:layout_scrollFlags="scroll|enterAlways|snap"-->

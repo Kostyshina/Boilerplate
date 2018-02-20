@@ -12,6 +12,7 @@ import io.realm.RealmResults;
  */
 
 public class RealmInteractor {
+
     private static RealmInteractor instance;
     private final Realm realm;
 

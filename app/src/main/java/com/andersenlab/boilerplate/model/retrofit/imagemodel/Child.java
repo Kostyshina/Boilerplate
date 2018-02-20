@@ -3,7 +3,7 @@ package com.andersenlab.boilerplate.model.retrofit.imagemodel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-class Child {
+public class Child {
 
     @SerializedName("data")
     @Expose
