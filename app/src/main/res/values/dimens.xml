@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="margin_activity_horizontal">16dp</dimen>
+    <dimen name="margin_activity_vertical">16dp</dimen>
+    
+    <!-- Main Activity screen -->
+    <dimen name="margin_button_main_horizontal">32dp</dimen>
+    <dimen name="margin_button_main_vertical">16dp</dimen>
+    <dimen name="margin_collapsing_toolbar_main_end">24dp</dimen>
+    <dimen name="margin_collapsing_toolbar_main_start">24dp</dimen>
+    <dimen name="size_floating_bottom_sheet_threshold">64dp</dimen>
+    <dimen name="height_toolbar_main">150dp</dimen>
+    
+    <!-- Item Image -->
+    <dimen name="height_image_content">200dp</dimen>
+
+</resources>

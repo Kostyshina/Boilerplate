@@ -1,6 +1,33 @@
 <resources>
     <string name="app_name">Boilerplate</string>
 
-    <!--Main Activity screen-->
+    <string name="navigation_drawer_open">Open drawer</string>
+    <string name="navigation_drawer_close">Close drawer</string>
+
+    <string name="text_hello_world">Hello world!</string>
+    <string name="toast_feature_not_implemented">Feature is not implemented yet</string>
+
+    <!-- Menu screen -->
+    <string name="navigation_database_title">Database</string>
+    <string name="navigation_network_title">Network</string>
+
+    <!-- Main Activity screen -->
     <string name="main_add_item">Add item</string>
+    <string name="main_add_item_error">Adding item error</string>
+    <string name="main_no_items">No more elements in the list</string>
+    
+    <!-- Item Image -->
+    <string name="image_content_description">Image placed</string>
+    <string-array name="image_items">
+        <item>https://images.unsplash.com/photo%2D1498866363999%2D1afe374cb87f?ixlib=rb%2D0.3.5%26q=80%26fm=jpg%26crop=entropy%26cs=tinysrgb%26w=1600%26h=900%26fit=crop%26s=cbcabecb33215cf8c059d9c98a82c821</item>
+        <item>https://images.unsplash.com/photo%2D1504214773179%2Dd03d431e4f83?ixlib=rb%2D0.3.5%26q=80%26fm=jpg%26crop=entropy%26cs=tinysrgb%26w=1600%26h=900%26fit=crop%26s=89f6058b6b777d71b0cc55762731fb4f</item>
+        <item>https://images.unsplash.com/photo%2D1492048845475%2D86b8917c827f?ixlib=rb%2D0.3.5%26q=80%26fm=jpg%26crop=entropy%26cs=tinysrgb%26w=1600%26h=900%26fit=crop%26s=c7ef8d31f22583ae63f8bb60f3930eb7</item>
+        <item>https://images.unsplash.com/photo%2D1498330177096%2D689e3fb901ca?ixlib=rb%2D0.3.5%26q=80%26fm=jpg%26crop=entropy%26cs=tinysrgb%26w=1600%26h=900%26fit=crop%26s=f7312972a7847f3b6d53120917132836</item>
+        <item>https://images.unsplash.com/photo%2D1509192979022%2D927d6dcf72fa?ixlib=rb%2D0.3.5%26q=80%26fm=jpg%26crop=entropy%26cs=tinysrgb%26w=1600%26h=900%26fit=crop%26s=68c4689583ea0c0e1c4e8566cef1ed60</item>
+        <!-- Not correct url -->
+        <item>https://images.unsplash.com/photo%2D9509192979022%2D927d6dcf72fa?ixlib=rb%2D0.3.5%26q=80%26fm=jpg%26crop=entropy%26cs=tinysrgb%26w=1600%26h=900%26fit=crop%26s=68c4689583ea0c0e1c4e8566cef1ed60</item>
+        <item>https://images.unsplash.com/photo%2D1505852817199%2D55498f0255f7?ixlib=rb%2D0.3.5%26q=80%26fm=jpg%26crop=entropy%26cs=tinysrgb%26w=1600%26h=900%26fit=crop%26s=d3af65228a5897d6a1501adba312e59b</item>
+        <item>https://images.unsplash.com/photo%2D1490174598816%2D2452a09d8563?ixlib=rb%2D0.3.5%26q=80%26fm=jpg%26crop=entropy%26cs=tinysrgb%26w=1600%26h=900%26fit=crop%26s=75e597bb7d6032c7c92c4722364ef7b6</item>
+        <item>https://images.unsplash.com/photo%2D1474621829993%2Dc411f0d8b5c5?ixlib=rb%2D0.3.5%26q=80%26fm=jpg%26crop=entropy%26cs=tinysrgb%26w=1600%26h=900%26fit=crop%26s=3ede6a6768e9b25d98337d41f0e725b0</item>
+    </string-array>
 </resources>

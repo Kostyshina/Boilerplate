@@ -1,27 +1,121 @@
 package com.andersenlab.boilerplate.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.Fragment;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.andersenlab.boilerplate.R;
+import com.andersenlab.boilerplate.customview.FloatingBottomSheet;
+import com.andersenlab.boilerplate.listener.LoadingFragmentContainer;
 
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+import butterknife.BindView;
 import timber.log.Timber;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity implements LoadingFragmentContainer {
+
+    private static final String ADD_ITEM_BUNDLE = "com.andersenlab.boilerplate.activity.addItem";
+
+    @BindView(R.id.app_bar_layout_main) AppBarLayout appBarLayout;
+    @BindView(R.id.collapsing_toolbar_main) CollapsingToolbarLayout collapsingToolbar;
+    @BindView(R.id.fbs_main_add_item) FloatingBottomSheet addItem;
+    @BindView(R.id.fragment_container_main) FrameLayout fragmentContainer;
+
+    private LoadingListener itemAddedListener =
+            new LoadingListener() {
+                @Override
+                public void onLoadingState(boolean inProgress) {
+                    Timber.i("loading state changed");
+                    addItem.setEnabled(!inProgress);
+                }
+
+                @Override
+                public void onSuccess() {
+                    Timber.i("item added");
+                    addItem.setEnabled(true);
+                }
+
+                @Override
+                public void onError() {
+                    Timber.i("no item was added");
+                    addItem.setEnabled(true);
+                }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ButterKnife.bind(this);
+        if (savedInstanceState != null) {
+            onFragmentAdded(getSupportFragmentManager().findFragmentById(getFragmentContainer()));
+        }
+
+        CoordinatorLayout.LayoutParams appBarLayoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+        AppBarLayout.Behavior behavior = new AppBarLayout.Behavior();
+        behavior.setDragCallback(new AppBarDragCallback());
+        appBarLayoutParams.setBehavior(behavior);
+        appBarLayout.setLayoutParams(appBarLayoutParams);
+
+        addItem.setOnClickListener(this::onAddItemClicked);
     }
 
-    @OnClick(R.id.btn_main_add_item)
-    public void addItem(View view) {
+    @Override
+    protected int getFragmentContainer() {
+        return R.id.fragment_container_main;
+    }
+
+    @Override
+    protected Fragment getFragmentWithBundle(Fragment fragment) {
+        Bundle args = fragment.getArguments();
+        if (args == null)
+            args = new Bundle();
+
+        args.putBoolean(ADD_ITEM_BUNDLE, fragment instanceof OnAddItemClickListener);
+
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    protected void onFragmentAdded(Fragment currentFragment) {
+        Timber.i("onFragmentAdded");
+        Bundle args;
+        if (currentFragment != null && (args = currentFragment.getArguments()) != null) {
+            boolean addItemNeeded = args.getBoolean(ADD_ITEM_BUNDLE, false);
+            if (addItemNeeded) {
+                Timber.i("display addItem button");
+                addItem.setVisibility(View.VISIBLE);
+                addItem.invalidate();
+            } else
+                addItem.setVisibility(View.INVISIBLE);
+        } else
+            addItem.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public LoadingListener onRequestLoadingListener() {
+        return itemAddedListener;
+    }
+
+    @Override
+    public String getToolbarTitle() {
+        return getString(R.string.app_name);
+    }
+
+    private void onAddItemClicked(View view) {
         Timber.i("Tap on add item button");
+        Fragment currentFragment = fragmentManager.findFragmentById(getFragmentContainer());
+        if (currentFragment instanceof OnAddItemClickListener) {
+            addItem.setEnabled(false);
+            ((OnAddItemClickListener) currentFragment).addItem();
+        }
+    }
+
+    public interface OnAddItemClickListener {
+        void addItem();
     }
 }

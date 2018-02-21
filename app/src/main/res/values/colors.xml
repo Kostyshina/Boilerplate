@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4caf50</color>
-    <color name="colorPrimaryDark">#087f23</color>
-    <color name="colorAccent">#ff9100</color>
+    <color name="colorPrimary">@color/colorGreen</color>
+    <color name="colorPrimaryDark">@color/colorGreenDark</color>
+    <color name="colorAccent">@color/colorOrange</color>
+
+    <color name="colorBack">#000000</color>
+    <color name="colorBlackTransparent">#33000000</color>
+    <color name="colorGreenLight">#80e27e</color>
+    <color name="colorGreen">#4caf50</color>
+    <color name="colorGreenDark">#087f23</color>
+    <color name="colorOrangeLight">#ffc246</color>
+    <color name="colorOrange">#ff9100</color>
+    <color name="colorOrangeDark">#c56200</color>
+    <color name="colorRedTransparent">#33ff0000</color>
+    
+    <color name="colorButtonPressed">@color/colorGreenLight</color>
+    <color name="colorButtonNormal">@color/colorAccent</color>
+    <color name="colorError">@color/colorRedTransparent</color>
+    <color name="colorPlaceholder">@color/colorOrangeLight</color>
 </resources>
