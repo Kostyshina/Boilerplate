@@ -15,7 +15,7 @@ public class ImageUtils {
 
     }
 
-    public static ImageUtils getInstance() {
+    public static synchronized ImageUtils getInstance() {
         if (instance == null)
             instance = new ImageUtils();
 

@@ -10,12 +10,12 @@ import android.widget.FrameLayout;
 
 import com.andersenlab.boilerplate.R;
 import com.andersenlab.boilerplate.customview.FloatingBottomSheet;
-import com.andersenlab.boilerplate.fragment.ImagesFragment;
+import com.andersenlab.boilerplate.listener.LoadingFragmentContainer;
 
 import butterknife.BindView;
 import timber.log.Timber;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements LoadingFragmentContainer {
 
     private static final String ADD_ITEM_BUNDLE = "com.andersenlab.boilerplate.activity.addItem";
 
@@ -24,8 +24,14 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.fbs_main_add_item) FloatingBottomSheet addItem;
     @BindView(R.id.fragment_container_main) FrameLayout fragmentContainer;
 
-    private ImagesFragment.ImagesLoadingListener itemAddedListener =
-            new ImagesFragment.ImagesLoadingListener() {
+    private LoadingListener itemAddedListener =
+            new LoadingListener() {
+                @Override
+                public void onLoadingState(boolean inProgress) {
+                    Timber.i("loading state changed");
+                    addItem.setEnabled(!inProgress);
+                }
+
                 @Override
                 public void onSuccess() {
                     Timber.i("item added");
@@ -91,7 +97,7 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    protected ImagesFragment.ImagesLoadingListener getImagesLoadingListener() {
+    public LoadingListener onRequestLoadingListener() {
         return itemAddedListener;
     }
 

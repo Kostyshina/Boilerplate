@@ -1,5 +1,6 @@
 package com.andersenlab.boilerplate.fragment;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,13 +18,14 @@ import android.widget.Toast;
 import com.andersenlab.boilerplate.R;
 import com.andersenlab.boilerplate.activity.MainActivity;
 import com.andersenlab.boilerplate.adapter.ImageAdapter;
+import com.andersenlab.boilerplate.listener.LoadingFragmentContainer;
+import com.andersenlab.boilerplate.listener.LoadingFragmentContainer.LoadingListener;
 import com.andersenlab.boilerplate.model.Image;
 import com.andersenlab.boilerplate.presenter.ImagePresenter;
 import com.andersenlab.boilerplate.view.ImageMvpView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 
-import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -33,13 +35,18 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import timber.log.Timber;
 
+/**
+ * Fragment for loading {@link Image} objects to recyclerView.
+ * Attached context must implement {@link com.andersenlab.boilerplate.listener.LoadingFragmentContainer} interface
+ * if you want receive loading updates.
+ */
+
 public class ImagesFragment extends BaseFragment implements ImageMvpView,
         MainActivity.OnAddItemClickListener {
 
     private static final String PRESENTER_BUNDLE_KEY = "com.andersenlab.boilerplate.fragment.presenter";
     private static final String IMAGES_BUNDLE_KEY = "com.andersenlab.boilerplate.fragment.imageList";
     private static final String LOADING_REPOSITORY_BUNDLE_KEY = "com.andersenlab.boilerplate.fragment.loadingRepository";
-    private static final String LOADING_LISTENER_BUNDLE_KEY = "com.andersenlab.boilerplate.fragment.loadingListener";
 
     @BindView(R.id.rv_image_list_items) RecyclerView imageRecyclerView;
 
@@ -50,15 +57,25 @@ public class ImagesFragment extends BaseFragment implements ImageMvpView,
     private ArrayList<Image> imageList;
     private LoadingRepository imagesRepository;
 
-    private ImagesLoadingListener listener;
+    private LoadingListener listener;
 
-    public static ImagesFragment newInstance(LoadingRepository loadingRepository, ImagesLoadingListener listener) {
+    public static ImagesFragment newInstance(LoadingRepository loadingRepository) {
         ImagesFragment fragment = new ImagesFragment();
         Bundle args = new Bundle();
         args.putString(LOADING_REPOSITORY_BUNDLE_KEY, loadingRepository.name());
-        args.putSerializable(LOADING_LISTENER_BUNDLE_KEY, listener);
+
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof LoadingFragmentContainer) {
+            listener = ((LoadingFragmentContainer) context).onRequestLoadingListener();
+        }
+        if (listener == null)
+            listener = LoadingFragmentContainer.DEFAULT_LISTENER;
     }
 
     @Nullable
@@ -78,7 +95,6 @@ public class ImagesFragment extends BaseFragment implements ImageMvpView,
         if (getArguments() != null) {
             loadingRepositoryName = getArguments()
                     .getString(LOADING_REPOSITORY_BUNDLE_KEY, LoadingRepository.LOAD_FROM_REALM.name());
-            listener = (ImagesLoadingListener) getArguments().getSerializable(LOADING_LISTENER_BUNDLE_KEY);
         }
         imagesRepository = LoadingRepository.valueOf(loadingRepositoryName);
 
@@ -108,6 +124,7 @@ public class ImagesFragment extends BaseFragment implements ImageMvpView,
         if (imagePresenter == null)
             imagePresenter = new ImagePresenter();
         imagePresenter.attachView(this);
+        listener.onLoadingState(imagePresenter.isLoading());
     }
 
     @Override
@@ -130,6 +147,7 @@ public class ImagesFragment extends BaseFragment implements ImageMvpView,
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        Timber.i("onSaveInstanceState");
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(IMAGES_BUNDLE_KEY, imageList);
         outState.putParcelable(PRESENTER_BUNDLE_KEY, imagePresenter);
@@ -151,35 +169,31 @@ public class ImagesFragment extends BaseFragment implements ImageMvpView,
                     break;
                 default:
                     Timber.e("Requested loading repository is not available");
-                    if (listener != null)
-                        listener.onError();
+                    listener.onError();
             }
         } else {
             Timber.e("You must initialize presenter first");
-            if (listener != null)
-                listener.onError();
+            listener.onError();
         }
     }
 
     @Override
     public void showNewImage(Image item) {
         addItemToList(item);
-        if (listener != null)
-            listener.onSuccess();
+        listener.onSuccess();
         Timber.i("showNewItem %d", item.getId());
     }
 
     @Override
     public void showNoNewImages() {
-        if (listener != null)
-            listener.onError();
+        listener.onError();
         Toast.makeText(getActivity(), R.string.main_no_items, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void showError(MvpViewException exc) {
-        if (listener != null)
-            listener.onError();
+        listener.onError();
+        Toast.makeText(getActivity(), exc.getMessage(), Toast.LENGTH_LONG).show();
         Timber.e(exc);
     }
 
@@ -198,10 +212,5 @@ public class ImagesFragment extends BaseFragment implements ImageMvpView,
 
     public enum LoadingRepository {
         LOAD_FROM_REALM, LOAD_FROM_DB, LOAD_FROM_NETWORK
-    }
-
-    public interface ImagesLoadingListener extends Serializable {
-        void onSuccess();
-        void onError();
     }
 }
